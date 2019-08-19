@@ -1,0 +1,15 @@
+<h3>Alterar produto: </h3>
+<div class="card">
+    <div class="card-body">
+        <form action="/usuario/alterar-produto" method="POST">
+                <input type="text" name="id_produto" value="{{produto._id}}" required hidden>
+            <label for="nome">Nome: </label>
+                <input type="text" name="nome" value="{{produto.nome}}" class="form-control" required>
+            <label for="descricao">Descrição: </label>
+                <textarea name="descricao" class="form-control">{{produto.descricao}}</textarea>
+            <label for="valor_unitario">Valor unitário: </label>
+                <input type="string" name="valor_unitario" class="form-control" value="{{produto.valor_unitario}}" required>
+            <button class="btn btn-success mt-4" type="submit">Alterar</button>
+        </form>
+    </div>
+</div>

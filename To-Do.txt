@@ -1,0 +1,29 @@
+To-do List:
+
+GERAR CALENDÁRIO NAS SEGUINTES PÁGINAS (PRIORIDADE 1)
+    -principal
+    -adicionar evento
+    -agendar consulta
+
+ALTERAR MÉTODO DE BUSCA (PRIORIDADE 2)
+    -realizar a busca de usuários no sistema por meio do nome também. (PARCIALMENTE IMPLEMENTADO.)
+
+ADICIONAR FUNCIONALIDADES (PRIORIDADE 2)
+    -financeiro (prioridade 2.1)
+        -abrir comanda de estadia.
+        -contabilizar os valores consumidos.
+        -fechar comanda de estadia, constatando o pagamento.
+        -gerar pdf para impressão.
+    -adicionar cadastro de dependentes (prioridade 2.2)
+    -adicionar sistema de reservas (prioridade 2.1)
+
+ATUALIZAÇÃO VISUAL DO SISTEMA (PRIORIDADE 3)
+
+ALTERAR O NOME DOS "CLÍNICOS" PARA MELHOR SE ADEQUAR (PRIORIDADE 3)
+
+
+
+Custos operacionais interface para a gerência.
+Relatórios diárias de todo o financeiro do espaço,
+Insumos de trabalho, perguntar.
+talvez um controle mínimo de estoque.

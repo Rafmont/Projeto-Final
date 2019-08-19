@@ -1,0 +1,25 @@
+<h3>Desativar quarto: </h3>
+<div class="card">
+    <div class="card-body">
+        <form action="/usuario/desativar-quarto" method="POST">
+                <input type="text" name="id_quarto" value="{{quarto._id}}" required hidden>
+            <label for="titulo">Titulo: </label>
+                <input type="text" name="titulo" class="form-control" value="{{quarto.titulo}}" disabled required>
+            <label for="estado">Estado: </label>
+                <select name="estado" disabled class="form-control">
+                    {{#select quarto.estado}}
+                    <option value="disponivel" default>Disponível</option>
+                    <option value="ocupado">Ocupado</option>
+                    <option value="manutencao">Em manutenção</option>
+                    {{/select}}
+                </select>
+            <label for="tipo">Tipo: </label>
+                <input disabled type="text" name="tipo" class="form-control" value="{{quarto.tipo}}" required>
+            <label for="capacidade">Capacidade: </label>
+                <input disabled type="number" class="form-control" value="{{quarto.capacidade}}" name="capacidade">
+            <label for="diaria">Diária: </label>
+                <input disabled type="text" class="form-control" value="{{quarto.diaria}}" name="diaria">
+            <button class="btn btn-danger mt-4" type="submit">Desativar</button>
+        </form>
+    </div>
+</div>

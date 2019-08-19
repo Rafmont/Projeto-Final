@@ -1,0 +1,15 @@
+<h3>Desativar produto: </h3>
+<div class="card">
+    <div class="card-body">
+        <form action="/usuario/desativar-produto" method="POST">
+                <input type="text" name="id_produto" value="{{produto._id}}" required hidden>
+            <label for="nome">Nome: </label>
+                <input type="text" name="nome" value="{{produto.nome}}" class="form-control" disabled required>
+            <label for="descricao">Descrição: </label>
+                <textarea name="descricao" class="form-control" disabled>{{produto.descricao}}</textarea>
+            <label for="valor_unitario">Valor unitário: </label>
+                <input type="string" name="valor_unitario" class="form-control" value="{{produto.valor_unitario}}" disabled required>
+            <button class="btn btn-danger mt-4" type="submit">Desativar</button>
+        </form>
+    </div>
+</div>

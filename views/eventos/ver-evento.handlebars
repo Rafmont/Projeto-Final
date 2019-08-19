@@ -1,0 +1,13 @@
+<div class="card">
+    <div class="card-body">
+        <h3>{{evento.titulo}}</h3>
+        <hr>
+        <p style="text-align: justify">{{evento.descricao}}</p>
+        <br>
+        <div style="text-align: center;">
+            <a href="/admin/alterar-evento/{{evento._id}}"><button class="btn btn-success">Editar</button></a>
+            &nbsp;&nbsp;&nbsp;
+            <a href="/admin/desativar-evento/{{evento._id}}"><button class="btn btn-danger">Desativar</button></a>
+        </div>
+    </div>
+</div>

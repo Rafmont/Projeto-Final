@@ -1,0 +1,31 @@
+{{#if produtos}}
+    <h3>Produtos:</h3>
+<div class="card">
+<div class="card-body">
+    <a href="/usuario/cadastro-produto"><button class="btn btn-success">Cadastrar</button></a>
+    <hr>
+    <div class="container">
+        {{#grouped_each 3 produtos}}
+            <div class="row">
+                {{#each this}}
+                    <div class="col" style="padding: 2%;text-align:center;">
+                        <h5>{{nome}}</h5>
+                        <h6>Valor: {{valor_unitario}}</h6>
+                        <a href="/usuario/alterar-produto/{{_id}}"><button class="btn btn-success">Alterar</button></a>
+                        <a href="/usuario/desativar-produto/{{_id}}"><button class="btn btn-danger">Desativar</button></a>
+                    </div>
+                {{/each}}
+            </div>
+        {{/grouped_each}}
+    </div>
+</div>
+</div>
+{{else}}
+<div class="card">
+<div class="card-body">
+    <a href="/usuario/cadastro-produto"><button class="btn btn-success">Cadastrar</button></a>
+    <hr>
+    <h4>Nenhum produto cadastrado.</h4>
+</div>
+</div>
+{{/if}}

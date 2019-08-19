@@ -1,0 +1,14 @@
+<h3>Cadastrar produto: </h3>
+<div class="card">
+    <div class="card-body">
+        <form action="/usuario/cadastro-produto" method="POST">
+            <label for="nome">Nome: </label>
+                <input type="text" name="nome" class="form-control" required>
+            <label for="descricao">Descrição: </label>
+                <textarea name="descricao" class="form-control"></textarea>
+            <label for="valor_unitario">Valor unitário: </label>
+                <input type="string" name="valor_unitario" class="form-control" required>
+            <button class="btn btn-success mt-4" type="submit">Cadastrar</button>
+        </form>
+    </div>
+</div>

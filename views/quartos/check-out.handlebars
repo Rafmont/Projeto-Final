@@ -1,0 +1,20 @@
+<h3>Check-out: </h3>
+
+<div class="card">
+    <div class="card-body">
+        <form action="/usuario/check-out" method="POST">
+            <h5><strong>{{estadia.quarto.titulo}}: </strong></h5>
+                <input type="text" name="id_quarto" hidden required value="{{estadia.quarto._id}}">
+            <label class="mt-2" for="nome_hospede">Nome do Hóspede: </label>
+                <input type="text" class="form-control" name="nome_hospede" value="{{estadia.hospede.nome}}" disabled>
+            <label class="mt-2">Valor da diária: <strong>{{estadia.quarto.diaria}}</strong></label><br>
+            <label for="diarias">Diárias: </label>
+                <input type="number" name="diarias" class="form-control" value="{{estadia.diarias}}" disabled required>
+            <label for="data_entrada">Data de Entrada: </label>
+                <input type="Date" name="data_entrada" class="form-control" disabled value="{{dateFormatiso estadia.data_entrada}}" required>
+            <label for="data_saida">Data de Saída: </label>
+                <input type="Date" name="data_saida" value="{{dateFormatiso estadia.data_saida}}" disabled class="form-control" required>
+            <button class="btn btn-danger mt-4" type="submit">Check-out</button>
+        </form>
+    </div>
+</div>

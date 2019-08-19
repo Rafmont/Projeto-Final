@@ -1,0 +1,24 @@
+<h3>Check-in: </h3>
+<div class="card">
+    <div class="card-body">
+        <form action="/usuario/check-in" method="POST">
+            <h5><strong>{{quarto.titulo}}: </strong></h5>
+                <input type="text" name="id_quarto" hidden required value="{{quarto._id}}">
+
+            <label for="cpf_hospede">Hóspede: </label>
+                <input type="text" name="cpf_hospede" class="form-control" list="hospedes">
+                <datalist id="hospedes">
+                    {{#each hospedes}}
+                        <option value="{{ cpf }}">{{nome}}</option>
+                    {{/each}}
+                </datalist>
+                
+            <label class="mt-2">Valor da diária: <strong>{{quarto.diaria}}</strong></label><br>
+            <label for="diarias">Diárias: </label>
+                <input type="number" name="diarias" class="form-control" required>
+            <label for="data_saida">Data de Saída: </label>
+                <input type="Date" name="data_saida" class="form-control" required>
+            <button class="btn btn-success mt-4" type="submit">Check-in</button>
+        </form>
+    </div>
+</div>

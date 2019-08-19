@@ -1,0 +1,49 @@
+<h3>Relatório de estadia: </h3>
+<div class="card">
+    <div class="card-body">
+        <h5>Busca por data:</h5>
+        <form action="/usuario/busca-estadia" method="POST">
+            <label for="busca_data_inicial">Data inicial: </label>
+                <input type="date" name="busca_data_inicial" class="form-control" required>
+            <label for="busca_data_final">Data final: </label>
+                <input type="date" name="busca_data_final" class="form-control">
+            <small>Somente a data inicial é obrigatória.</small><br>
+            <button type="submit" class="btn btn-success mt-3">Buscar</button>
+        </form>
+    </div>
+</div>
+<hr>
+{{#if estadias}}
+<div class="card">
+    <div class="card-body">
+        <div class="container">
+            {{#grouped_each 3 estadias}}
+                <div class="row">
+                    {{#each this}}
+                        <div class="col" style="padding: 2%;">
+                            <hr>
+                            <p>Hóspede: <strong>{{hospede.nome}}</strong></p>
+                            <p>Quarto: {{quarto.titulo}}</p>
+                            <p>Valor diária: {{quarto.diaria}}</p>
+                            <p>Data de entrada: {{dateFormat data_entrada}}</p>
+                            <p>Data de saída: {{dateFormat data_saida}}</p>
+                            {{#if ativa}}
+                                <p><strong>Estadia em andamento.</strong></p>
+                            {{else}}
+                                <p><strong>Estadia encerrada.</strong></p>
+                            {{/if}}
+                            <hr>
+                        </div>
+                    {{/each}}
+                </div>
+            {{/grouped_each}}
+        </div>
+    </div>
+</div>
+{{else}}
+<div class="card">
+    <div class="card-body">
+        <p>Nenhuma estadia cadastrada.</p>
+    </div>
+</div>
+{{/if}}

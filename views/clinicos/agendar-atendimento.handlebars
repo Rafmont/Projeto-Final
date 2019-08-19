@@ -1,0 +1,41 @@
+<h4>Agendar consulta:</h4>
+<div class="card">
+    <div class="card-body">
+        <form action="/usuario/agendar-atendimento" method="POST">
+            <label for="cpf_clinico">Clínico:</label>
+                <input type="text" name="cpf_clinico" class="form-control" list="clinicos">
+                <datalist id="clinicos">
+                    {{#each clinicos}}
+                        <option value="{{ cpf }}">{{nome}}</option>
+                    {{/each}}
+                </datalist>
+
+
+            <label for="cpf_hospede">Hóspede: </label>
+                <input type="text" name="cpf_hospede" class="form-control" list="hospedes">
+                <datalist id="hospedes">
+                    {{#each hospedes}}
+                        <option value="{{ cpf }}">{{nome}}</option>
+                    {{/each}}
+                </datalist>
+                
+
+
+            <label for="sala">Sala da consulta:</label>
+                <input type="text" name="sala" class="form-control">
+            <label for="data_consulta">Data da consulta</label>
+                <input type="date" name="data_consulta" class="form-control">
+            <label for="horario">Horário</label>
+                <input type="time" name="horario" class="form-control">
+            <label for="servico">Serviço</label>
+                <select name="servico" class="form-control">
+                    {{#each servicos}}
+                    <option value="{{_id}}">{{nome}}</option>
+                    {{/each}}
+                </select>
+            <button type="submit" class="btn btn-success mt-2">Agendar</button>
+        </form>
+    </div>
+</div>
+
+

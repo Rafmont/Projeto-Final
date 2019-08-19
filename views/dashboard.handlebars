@@ -1,0 +1,105 @@
+<script>
+
+  document.addEventListener('DOMContentLoaded', function() {
+    var calendarEl = document.getElementById('calendar');
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+      height: 550,
+      plugins: [ 'interaction', 'dayGrid', 'timeGrid', 'list' ],
+      header: {
+        left: 'prev,next today',
+        center: 'title',
+        right: 'dayGridMonth,timeGridWeek,timeGridDay'
+      },
+
+      eventClick: function(info) {
+        window.location.href = "/admin/ver-evento/" + info.event.id
+      },
+
+      defaultDate: Date.now(),
+      navLinks: true, // can click day/week names to navigate views
+      businessHours: true, // display business hours
+      editable: true,
+      locale: 'pt-br',
+      events: [
+        {{#each eventos}}
+          {{#ifcond acontecer '==' true}}
+            {{#has_passed data}}
+              {
+                title: '{{titulo}}',
+                start: '{{dateFormatiso data}}T{{horario}}',
+                color: '#5cb85c',
+                id: '{{_id}}'
+              }, 
+            {{else}}
+              {
+                title: '{{titulo}}',
+                start: '{{dateFormatiso data}}T{{horario}}',
+                color: '#D9534F',
+                id: '{{_id}}'
+              }, 
+            {{/has_passed}}
+          {{/ifcond}} 
+        {{/each}}
+      ]
+    });
+
+    calendar.render();
+  });
+
+</script>
+
+
+
+
+<h2 style="text-align: center">Bem vindo ao sistema Vento Solar!</h2>
+<div class="card">
+    <div class="card-body">
+        <a href="/admin/cadastro-evento"><button class="btn btn-success">Criar Evento</button></a>
+        <hr>
+          <div id='calendar'></div>
+          <br><br>          
+    </div>
+</div>
+
+
+<!-- MODAL -->
+
+<div class="modal fade" id="modal-mensagem">
+   <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span>×</span></button>
+                <h4 class="modal-title">Título da mensagem</h4>
+            </div>
+            <div class="modal-body">
+                <p>Conteúdo da mensagem</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<!-- OLD CODES
+
+
+#ANTIGA DEMONSTRAÇÃO DE EVENTOS NA DASHBOARD.
+<div class="card mt-3">
+    <div class="card-body">
+        <h4>{{titulo}}</h4>
+        <hr>
+        <p>{{descricao}}</p>
+        <small class="mt-4">Data: {{dateFormat data "dd-mm-yyyy"}}</small><br>
+        <small class="mt-2">Horário: {{horario}}</small>
+        <hr>
+        <a href="/admin/alterar-evento/{{_id}}"><button class="btn btn-success mt-2">Editar</button></a>
+        <a href="/admin/desativar-evento/{{_id}}"><button class="btn btn-danger mt-2">Desativar</button></a>
+    </div>
+</div>
+<br>
+
+-->
