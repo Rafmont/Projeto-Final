@@ -27,3 +27,14 @@ Custos operacionais interface para a gerência.
 Relatórios diárias de todo o financeiro do espaço,
 Insumos de trabalho, perguntar.
 talvez um controle mínimo de estoque.
+
+
+DATAS AVALIAÇÕES E BANCAS
+
+09 e 10 setembro - Primeira avaliação.
+
+21 e 22 outubro - Segunda avaliação.
+
+12,18,19,25,26 novembro - Bancas.
+
+

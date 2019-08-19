@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
-const Prestador = new Schema({
+const Terapeuta = new Schema({
     nome: {
         type: String,
         required: true
@@ -36,4 +36,4 @@ const Prestador = new Schema({
     }
 })
 
-mongoose.model("prestadores", Prestador)
+mongoose.model("terapeutas", Terapeuta)
