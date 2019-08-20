@@ -2,51 +2,34 @@ const localStrategy = require("passport-local").Strategy
 const mongoose = require("mongoose")
 const bcrypt = require("bcryptjs")
 
-//model usuario
-require("../models/Usuario")
-const Usuario = mongoose.model("usuarios")
-require("../models/Terapeuta")
-const Terapeuta = mongoose.model("terapeutas")
+require("../models/ContaAcesso")
+const ContaAcesso = mongoose.model("ContasAcesso")
 
 module.exports = function(passport) {
-    passport.use(new localStrategy({usernameField: 'cpf', passwordField: 'senha'}, (cpf, senha, done) => {
-
-        Usuario.findOne({cpf: cpf}).then((usuario) => {
-            if(!usuario){
-                Terapeuta.findOne({cpf: cpf}).then((terapeuta) => {
-                    if(!terapeuta) {
-                        return done(null, false, {message: "Esta conta não existe"})
-                    }
-
-                    bcrypt.compare(senha, terapeuta.senha, (erro, batem) => {
-                        if(batem) {
-                            return done(null, terapeuta)
-                        }else {
-                            return done(null, false, {message: "Senha incorreta"})
-                        }
-                    })
-                })
-                
+    passport.use(new localStrategy({usernameField: 'login', passwordField: 'senha'}, (cpf, senha, done) => {
+        ContaAcesso.findOne({login: login}).then((contaacesso) => {
+            if(!contaacesso) {
+                return done(null, false, {message: "Esta conta não existe"})
             }
 
-            bcrypt.compare(senha, usuario.senha, (erro, batem) => {
+            bcrypt.compare(senha, contaacesso.senha, (erro, batem) => {
                 if(batem) {
-                    return done(null, usuario)
+                    return done(null, contaacesso)
                 }else {
-                    return done(null, false, {message: "Senha incorreta"})
+                    return done(null, false, {message: "Senha incorreta."})
                 }
             })
+
         })
-        
     }))
 
-    passport.serializeUser((usuario, done) => {
-        done(null, usuario.id)
+    passport.serializeUser((contaacesso, done) => {
+        done(null, contaacesso.id)
     })
 
     passport.deserializeUser((id, done) => {
-        Usuario.findById(id, (err, usuario) => {
-            done(err, usuario)
+        Usuario.findById(id, (err, contaacesso) => {
+            done(err, contaacesso)
         })
     })
 }

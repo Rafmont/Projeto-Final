@@ -31,10 +31,13 @@ const Usuario = new Schema({
     nivel_usuario: {
         type: Number,
         default: 0
+        /*
+        0: Atendente
+        1: Terapeuta
+        2: Gerente
+        3: Administrador
+        */
     },
-    senha: {
-        type: String,
-    }
 })
 
 mongoose.model("usuarios", Usuario)

@@ -194,11 +194,99 @@ router.post("/desativar-especialidade", verifica_gerente, (req, res) => {
 })
 
 router.get("/cadastro-terapeuta", verifica_gerente, (req, res) => {
-    res.render("terapeutas/cadastro-terapeuta")
+    Especialidade.find().then((especialidades) => {
+        res.render("terapeutas/cadastro-terapeuta", {especialidades: especialidades})
+    }).catch((err) => {
+        req.flash("error_msg", "Erro ao encontrar especialidades para o cadastro.")
+        res.redirect("/dashboard")
+    })
+     
 })
 
 router.post("/cadastro-terapeuta", verifica_gerente, (req, res) => {
+    var erros = []
 
+    if(!req.body.nome || typeof req.body.nome == undefined || req.body.nome == null) {
+        erros.push({texto: "Nome inválido."})
+    }
+
+    if(!req.body.data_nascimento || typeof req.body.data_nascimento == undefined || req.body.data_nascimento == null) {
+        erros.push({texto: "Data de nascimento inválida."})
+    }
+
+    if(!req.body.rg || typeof req.body.rg == undefined || req.body.rg == null) {
+        erros.push({texto: "RG inválido"})
+    }
+
+    if(!req.body.cpf || typeof req.body.cpf == undefined || req.body.cpf == null) {
+        erros.push({texto: "CPF inválido"})
+    }
+
+    if(!req.body.cpf || typeof req.body.cpf == undefined || req.body.cpf == null) {
+        erros.push({texto: "CPF inválido"})
+    }
+
+    if(!req.body.telefone_1 || typeof req.body.telefone_1 == undefined || req.body.telefone_1 == null) {
+        erros.push({texto: "Telefone 1 inválido"})
+    }
+
+    if(!req.body.email || typeof req.body.email == undefined || req.body.email == null) {
+        erros.push({texto: "Telefone 1 inválido"})
+    }
+
+    if(erros.length > 0) {
+        res.render("admin/cadastro-terapeuta", {erros: erros})
+    }else {
+        Terapeuta.findOne({rg: req.body.rg}).then((terapeuta) => {
+            if(terapeuta) {
+                req.flash("error_msg", "Já existe um terapêuta com este RG.")
+                res.redirect("/admin/cadastro-terapeuta")
+            } else {
+                if (req.body.telefone_2) {
+                    tel2 = req.body.telefone_2
+                } else {
+                    tel2 = 0
+                }
+                var novaData = moment(req.body.data_nascimento, "YYYY-MM-DD")
+
+                const novoTerapeuta = new Terapeuta({
+                    nome: req.body.nome,
+                    data_nascimento: novaData,
+                    rg: req.body.rg,
+                    cpf: req.body.cpf,
+                    telefone_1: req.body.telefone_1,
+                    telefone_2: tel2,
+                    email: req.body.email,
+                    nivel_usuario: req.body.nivel_usuario,
+                    senha: req.body.rg,
+                    acerto: req.body.acerto,
+                    especialidade: req.body.especialidade
+                })
+
+                bcrypt.genSalt(10, (erro, salt) => {
+                    bcrypt.hash(novoTerapeuta.senha, salt, (erro, hash) => {
+                        if(erro) {
+                            req.flash("error_msg", "Houve um erro durante o salvamento do terapêuta")
+                            res.redirect("/dashboard")
+                        }
+                        novoTerapeuta.senha = hash
+                        novoTerapeuta.save().then(() => {
+                            req.flash("success_msg", "Terapeuta cadastrado com sucesso!")
+                            res.redirect("/dashboard")
+                        }).catch((err) => {
+                            req.flash("error_msg", "Houve um erro ao cadastrar o terapêuta")
+                            res.redirect("/cadastro-terapeuta")
+                        })
+                    })
+                })
+
+            }
+        }).catch((err) => {
+            req.flash("error_msg", "Erro ao verificar contas existentes.")
+            res.redirect("/dashboard")
+        })
+    
+    }
 })
 
 

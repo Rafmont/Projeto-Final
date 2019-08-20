@@ -28,15 +28,24 @@ const Terapeuta = new Schema({
     email: {
         type: String,
     },
-    senha: {
-        type: String,
+    especialidade: {
+        type: Schema.Types.ObjectId,
+        ref: "especialidades",
+        required: true
     },
     acerto: {
-        type: String,
+        type: Number,
+        required: true
+        /*
+        0: diário
+        1: semanal
+        2: mensal
+        */
     },
     nivel_usuario: {
         type: Number,
         default: 1
+        //Padão para terapeuta.
     }
 })
 

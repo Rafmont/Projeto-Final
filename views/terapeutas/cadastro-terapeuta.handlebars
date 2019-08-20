@@ -1,7 +1,7 @@
 <h3>Cadastrar Terapeuta: </h3>
 <div class="card">
     <div class="card-body">
-        <form action="/usuario/cadastro-funcionario" method="POST">
+        <form action="/admin/cadastro-terapeuta" method="POST">
             <label for="nome">Nome: </label>
                 <input type="text" name="nome" class="form-control" required>
             <label for="data_nascimento">Data de nascimento: </label>
@@ -16,11 +16,17 @@
                 <input type="text" name="telefone_2" class="form-control">
             <label for="email">Email: </label>
                 <input type="email" name="email" class="form-control" required>
-            <label for="nivel_usuario">Função: </label>
-                <select name="nivel_usuario" class="custom-select" required>
-                    <option value="0">Atendente</option>
-                    <option value="2">Gerente</option>
-                    <option value="3">Administrador</option>
+            <label for="especialidade">Especialidade: </label>
+                <select name="especialidade" class="custom-select" required>
+                {{#each especialidades}}
+                    <option value="{{_id}}">{{nome}}</option>
+                {{/each}}
+                </select>
+            <label for="acerto">Periodicidade do pagamento: </label>
+                <select name="acerto" class="custom-select" required>
+                    <option value="0">Diário</option>
+                    <option value="1">Semanal</option>
+                    <option value="2">Mensal</option>
                 </select>
             <button class="btn btn-success mt-4" type="submit">Cadastrar</button>
         </form>

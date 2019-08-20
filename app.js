@@ -18,6 +18,8 @@ const moment = require('moment')
 require("./models/Evento")
 const Evento = mongoose.model("eventos")
 const {verifica_login} = require("./helpers/verifica_login")
+require("./models/ContaAcesso")
+const ContaAcesso = mongoose.model("ContasAcesso")
 
 //Configurações
 //Sessão

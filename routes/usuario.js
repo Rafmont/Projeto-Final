@@ -32,6 +32,8 @@ const {verifica_gerente} = require("../helpers/verifica_gerente")
 const {verifica_atendente} = require("../helpers/verifica_atendente")
 const {verifica_login} = require("../helpers/verifica_login")
 const {verifica_clinico} = require("../helpers/verifica_clinico")
+require("./models/ContaAcesso")
+const ContaAcesso = mongoose.model("ContasAcesso")
 
 
 router.get('/cadastro-funcionario',  (req, res) => {
@@ -92,26 +94,36 @@ router.post('/cadastro-funcionario',  (req, res) => {
                     telefone_2: tel2,
                     email: req.body.email,
                     nivel_usuario: req.body.nivel_usuario,
-                    senha: req.body.rg
                 })
+                novoUsuario.save().then(() => {
+                    bcrypt.genSalt(10, (erro, salt) => {
+                        bcrypt.hash(req.body.senha, salt, (erro, hash) => {
+                            if(erro) {
+                                req.flash("error_msg", "Houve um erro durante o salvamento do funcionário")
+                                res.redirect("/dashboard")
+                            }
+                            const novaContaAcesso = new ContaAcesso({
+                                usuario: novoUsuario._id,
+                                login: req.body.login,
+                                nome: req.body.nome,
+                                nivel_usuario: req.body.nivel_usuario,
+                                senha: hash,
+                            })
 
-                bcrypt.genSalt(10, (erro, salt) => {
-                    bcrypt.hash(novoUsuario.senha, salt, (erro, hash) => {
-                        if(erro) {
-                            req.flash("error_msg", "Houve um erro durante o salvamento do funcionário")
-                            res.redirect("/dashboard")
-                        }
-                        novoUsuario.senha = hash
-                        novoUsuario.save().then(() => {
-                            req.flash("success_msg", "Funcionário criado com sucesso!")
-                            res.redirect("/dashboard")
-                        }).catch((err) => {
-                            req.flash("error_msg", "Houve um erro ao criar o funcionário")
-                            res.redirect("/cadastro-funcionario")
+                            novaContaAcesso.save().then(() => {
+                                req.flash("success_msg", "Usuário cadastrado com sucesso!")
+                                res.redirect("/dashboard")
+                            }).catch((err) => {
+                                req.flash("error_msg", "Erro ao criar uma conta de acesso!")
+                                res.redirect("/dashboard")
+                            })
                         })
                     })
+                }).catch((err) => {
+                    req.flash("error_msg", "Erro ao salvar novo usuário")
+                    res.redirect("/dashboard")
                 })
-            }
+            }    
         }).catch((err) => {
             req.flash("error_msg", "Houve um erro interno!")
             res.redirect("/dashboard")
