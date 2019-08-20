@@ -26,7 +26,7 @@ ALTERAR O NOME DOS "CLÍNICOS" PARA MELHOR SE ADEQUAR (PRIORIDADE 3)
 Custos operacionais interface para a gerência.
 Relatórios diárias de todo o financeiro do espaço,
 Insumos de trabalho, perguntar.
-talvez um controle mínimo de estoque.
+terá de ter um controle mínimo de estoque.
 
 
 DATAS AVALIAÇÕES E BANCAS
