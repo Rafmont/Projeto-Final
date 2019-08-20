@@ -1,0 +1,38 @@
+{{#if especialidades}}
+    <h3>Especialidades:</h3>
+<div class="card">
+<div class="card-body">
+    {{#ifcond user.nivel_usuario '>=' 2}}
+    <a href="/admin/cadastro-especialidade"><button class="btn btn-success">Cadastrar</button></a>
+    {{/ifcond}}
+    <hr>
+    <div class="container">
+        {{#grouped_each 3 especialidades}}
+            <div class="row">
+                {{#each this}}
+                    {{#if ativa}}
+                    <div class="col" style="padding: 2%;text-align:center;">
+                        <h5>{{nome}}</h5><br>
+                        <p style="text-align: justify;">{{descricao}}</p>
+                        <hr>
+                        <a href="/admin/alterar-especialidade/{{_id}}"><button class="btn btn-success">Alterar</button></a>
+                        <a href="/admin/desativar-especialidade/{{_id}}"><button class="btn btn-danger">Desativar</button></a>
+                    </div>
+                    {{/if}}
+                {{/each}}
+            </div>
+        {{/grouped_each}}
+    </div>
+</div>
+</div>
+{{else}}
+<div class="card">
+<div class="card-body">
+    {{#ifcond user.nivel_usuario '>=' 2}}
+    <a href="/admin/cadastro-especialidade"><button class="btn btn-success">Cadastrar</button></a>
+    {{/ifcond}}
+    <hr>
+    <h4>Nenhuma especialidade cadastrada.</h4>
+</div>
+</div>
+{{/if}}

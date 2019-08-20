@@ -33,6 +33,10 @@ const Terapeuta = new Schema({
     },
     acerto: {
         type: String,
+    },
+    nivel_usuario: {
+        type: Number,
+        default: 1
     }
 })
 
