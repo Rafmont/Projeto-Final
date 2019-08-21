@@ -31,7 +31,7 @@
                 id: '{{_id}}'
               }, 
             {{else}}
-              {
+              { 
                 title: '{{titulo}}',
                 start: '{{dateFormatiso data}}T{{horario}}',
                 color: '#D9534F',
@@ -54,8 +54,10 @@
 <h2 style="text-align: center">Bem vindo ao sistema Vento Solar!</h2>
 <div class="card">
     <div class="card-body">
+      {{#ifcond user.nivel_usuario '!=' 1}}
         <a href="/admin/cadastro-evento"><button class="btn btn-success">Criar Evento</button></a>
         <hr>
+      {{/ifcond}}
           <div id='calendar'></div>
           <br><br>          
     </div>

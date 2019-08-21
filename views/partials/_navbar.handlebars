@@ -4,6 +4,7 @@
 {{#if user}}
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto mx-5">
+        {{#ifcond user.nivel_usuario '!=' 1}}
         <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 Funcionarios
@@ -21,13 +22,10 @@
             <div class="dropdown-menu">
                 <a class="dropdown-item" href="/usuario/servicos">Serviços</a>
                 <a class="dropdown-item" href="/usuario/agendar-atendimento">Agendar atendimento</a>
-                {{#ifcond user.nivel_usuario '==' 1}}
-                    <a class="dropdown-item" href="/usuario/atendimentos-marcados/{{user._id}}">Atendimentos marcados</a>
-                {{else}}
-                    <a class="dropdown-item" href="/usuario/atendimentos-marcados">Atendimentos marcados</a>
-                {{/ifcond}}
-                <hr>
+                <a class="dropdown-item" href="/usuario/atendimentos-marcados">Atendimentos marcados</a>
+                
                 {{#ifcond user.nivel_usuario '>=' 2}}
+                <hr>
                     <a class="dropdown-item" href="/admin/cadastro-terapeuta">Cadastro de terapêutas</a>
                     <a class="dropdown-item" href="#">Alterar terapêutas</a>
                     <a class="dropdown-item" href="#">Desativar de terapêutas</a>
@@ -60,6 +58,15 @@
         <li class="nav-item">
             <a class="nav-link mx-3" href="/usuario/quartos">Check-in e Check-out</a>
         </li>
+        {{else}}
+        <a class="nav-link mx-2" href="/usuario/atendimentos-marcados/{{user._id}}">
+            Atendimentos Marcados
+        </a>
+        <a class="nav-link mx-2" href="/usuario/servicos" role="button">
+            Serviços
+        </a>
+
+        {{/ifcond}}
     </ul>
     <ul class="navbar-nav mr-auto mr-sm-2">
       <li class="nav-item dropdown">

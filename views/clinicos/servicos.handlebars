@@ -1,8 +1,10 @@
 <h3>Serviços:</h3>
 <div class="card">
     <div class="card-body">
+        {{#ifcond user.nivel_usuario '!=' 1}}
         <a href="/usuario/cadastro-servico"><button class="btn btn-success">Cadastrar</button></a>
         <hr>
+        {{/ifcond}}
         {{#if servicos}}
         {{#each servicos}}
             {{#ifcond ativo "==" true}}
@@ -13,7 +15,6 @@
                         <p style="text-align:justify">{{descricao}}</p>
                         <p>R$ {{valor}}</p>
                         <a href="/usuario/alterar-servico/{{_id}}"<button class="btn btn-success mt-2">Alterar</button></a>
-                        <a href="/usuario/desativar-servico/{{_id}}"<button class="btn btn-danger mt-2">Desativar</button></a>
                     </div>
                 </div>
             {{/ifcond}}

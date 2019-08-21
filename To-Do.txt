@@ -40,4 +40,11 @@ DATAS AVALIAÇÕES E BANCAS
 
 ATUALMENTE TRABALHANDO EM:
 
-Separação das contas de acesso. Alterar todos os arquivos para que se adequêm e o novo sistema de login seja concluido ()
+Separação das contas de acesso. Alterar todos os arquivos para que se adequêm e o novo sistema de login seja concluido (X)
+
+Corrigir o que o clínico pode ver ou não. ()
+
+Fazer o agendamento de consultas 2.0, já com a implementação de uma fatura. ()
+
+
+
