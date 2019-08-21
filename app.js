@@ -19,7 +19,7 @@ require("./models/Evento")
 const Evento = mongoose.model("eventos")
 const {verifica_login} = require("./helpers/verifica_login")
 require("./models/ContaAcesso")
-const ContaAcesso = mongoose.model("ContasAcesso")
+const ContaAcesso = mongoose.model("contasacesso")
 
 //Configurações
 //Sessão
@@ -144,7 +144,6 @@ const ContaAcesso = mongoose.model("ContasAcesso")
     app.get('/dashboard', verifica_login, (req, res) => {
         Evento.find().sort({data: "desc"}).then((eventos) => {
             var data_agora = Date(Date.now());
-            console.log(data_agora);
             res.render("dashboard", {eventos: eventos, data_agora: data_agora})
         })
     })

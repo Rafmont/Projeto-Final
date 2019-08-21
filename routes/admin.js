@@ -19,6 +19,8 @@ require("../models/Especialidade")
 const Especialidade = mongoose.model("especialidades")
 const {verifica_gerente} = require("../helpers/verifica_gerente")
 const {verifica_atendente} = require("../helpers/verifica_atendente")
+require("../models/ContaAcesso")
+const ContaAcesso = mongoose.model("contasacesso")
 
 
 
@@ -239,8 +241,8 @@ router.post("/cadastro-terapeuta", verifica_gerente, (req, res) => {
     }else {
         Terapeuta.findOne({rg: req.body.rg}).then((terapeuta) => {
             if(terapeuta) {
-                req.flash("error_msg", "Já existe um terapêuta com este RG.")
-                res.redirect("/admin/cadastro-terapeuta")
+                req.flash("error_msg", "Já existe um terapeuta com este RG.")
+                res.redirect("/cadastro-terapeuta")
             } else {
                 if (req.body.telefone_2) {
                     tel2 = req.body.telefone_2
@@ -248,7 +250,6 @@ router.post("/cadastro-terapeuta", verifica_gerente, (req, res) => {
                     tel2 = 0
                 }
                 var novaData = moment(req.body.data_nascimento, "YYYY-MM-DD")
-
                 const novoTerapeuta = new Terapeuta({
                     nome: req.body.nome,
                     data_nascimento: novaData,
@@ -257,35 +258,43 @@ router.post("/cadastro-terapeuta", verifica_gerente, (req, res) => {
                     telefone_1: req.body.telefone_1,
                     telefone_2: tel2,
                     email: req.body.email,
-                    nivel_usuario: req.body.nivel_usuario,
-                    senha: req.body.rg,
-                    acerto: req.body.acerto,
-                    especialidade: req.body.especialidade
+                    especialidade: req.body.especialidade,
+                    acerto: req.body.acerto
                 })
+                novoTerapeuta.save().then(() => {
+                    bcrypt.genSalt(10, (erro, salt) => {
+                        bcrypt.hash(req.body.senha, salt, (erro, hash) => {
+                            if(erro) {
+                                req.flash("error_msg", "Houve um erro durante o salvamento do Terapêuta")
+                                res.redirect("/dashboard")
+                            }
+                            const novaContaAcesso = new ContaAcesso({
+                                terapeuta: novoTerapeuta._id,
+                                login: req.body.login,
+                                nome: req.body.nome,
+                                nivel_usuario: novoTerapeuta.nivel_usuario,
+                                senha: hash,
+                            })
 
-                bcrypt.genSalt(10, (erro, salt) => {
-                    bcrypt.hash(novoTerapeuta.senha, salt, (erro, hash) => {
-                        if(erro) {
-                            req.flash("error_msg", "Houve um erro durante o salvamento do terapêuta")
-                            res.redirect("/dashboard")
-                        }
-                        novoTerapeuta.senha = hash
-                        novoTerapeuta.save().then(() => {
-                            req.flash("success_msg", "Terapeuta cadastrado com sucesso!")
-                            res.redirect("/dashboard")
-                        }).catch((err) => {
-                            req.flash("error_msg", "Houve um erro ao cadastrar o terapêuta")
-                            res.redirect("/cadastro-terapeuta")
+                            novaContaAcesso.save().then(() => {
+                                req.flash("success_msg", "Terapêuta cadastrado com sucesso!")
+                                res.redirect("/dashboard")
+                            }).catch((err) => {
+                                req.flash("error_msg", "Erro ao criar uma conta de acesso!")
+                                res.redirect("/dashboard")
+                            })
                         })
                     })
+                }).catch((err) => {
+                    req.flash("error_msg", "Erro ao salvar novo Terapêuta")
+                    res.redirect("/dashboard")
                 })
-
-            }
+            }    
         }).catch((err) => {
-            req.flash("error_msg", "Erro ao verificar contas existentes.")
+            req.flash("error_msg", "Houve um erro interno!")
             res.redirect("/dashboard")
         })
-    
+        
     }
 })
 

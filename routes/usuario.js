@@ -32,8 +32,8 @@ const {verifica_gerente} = require("../helpers/verifica_gerente")
 const {verifica_atendente} = require("../helpers/verifica_atendente")
 const {verifica_login} = require("../helpers/verifica_login")
 const {verifica_clinico} = require("../helpers/verifica_clinico")
-require("./models/ContaAcesso")
-const ContaAcesso = mongoose.model("ContasAcesso")
+require("../models/ContaAcesso")
+const ContaAcesso = mongoose.model("contasacesso")
 
 
 router.get('/cadastro-funcionario',  (req, res) => {
@@ -146,7 +146,7 @@ router.post('/alterar-senha', (req, res) => {
     if(erros.length > 0) {
         res.render("funcionarios/alterar-senha", {erros: erros})
     }else {
-        Usuario.findOne({_id: req.body.id}).then((usuario) => {
+        ContaAcesso.findOne({_id: req.body.id}).then((contaacesso) => {
             novaSenha = req.body.senha_nova1
             bcrypt.genSalt(10, (erro, salt) => {
                 bcrypt.hash(novaSenha, salt, (erro, hash) => {
@@ -154,8 +154,8 @@ router.post('/alterar-senha', (req, res) => {
                         req.flash("error_msg", "Houve um erro ao alterar a senha.")
                         res.redirect("/")
                     }
-                    usuario.senha = hash
-                    usuario.save().then(() => {
+                    contaacesso.senha = hash
+                    contaacesso.save().then(() => {
                         req.flash("success_msg", "Senha alterada com sucesso!")
                         res.redirect("/dashboard")
                     }).catch((err) => {

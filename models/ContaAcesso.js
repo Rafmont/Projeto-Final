@@ -8,7 +8,7 @@ const ContaAcesso = new Schema({
     },
     usuario: {
         type: Schema.Types.ObjectId,
-        ref: "usuarios"
+        ref: "usuarios" 
     },
     login: {
         type: String,
@@ -28,4 +28,4 @@ const ContaAcesso = new Schema({
     }
 })
 
-mongoose.model("ContasAcesso", ContaAcesso)
+mongoose.model("contasacesso", ContaAcesso)

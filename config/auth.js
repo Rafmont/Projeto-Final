@@ -3,10 +3,10 @@ const mongoose = require("mongoose")
 const bcrypt = require("bcryptjs")
 
 require("../models/ContaAcesso")
-const ContaAcesso = mongoose.model("ContasAcesso")
+const ContaAcesso = mongoose.model("contasacesso")
 
 module.exports = function(passport) {
-    passport.use(new localStrategy({usernameField: 'login', passwordField: 'senha'}, (cpf, senha, done) => {
+    passport.use(new localStrategy({usernameField: 'login', passwordField: 'senha'}, (login, senha, done) => {
         ContaAcesso.findOne({login: login}).then((contaacesso) => {
             if(!contaacesso) {
                 return done(null, false, {message: "Esta conta não existe"})
@@ -28,7 +28,7 @@ module.exports = function(passport) {
     })
 
     passport.deserializeUser((id, done) => {
-        Usuario.findById(id, (err, contaacesso) => {
+        ContaAcesso.findById(id, (err, contaacesso) => {
             done(err, contaacesso)
         })
     })
