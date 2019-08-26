@@ -1,0 +1,63 @@
+<h3>Alterar terapêuta: </h3>
+<div class="card">
+    <div class="card-body">
+        <h5>Buscar terapêuta:</h5>
+        <form action="/admin/busca-alterar-terapeuta" method="POST">
+            <label for="busca_cpf">Terapêuta: </label>
+                <input type="text" name="busca_cpf" class="form-control" list="terapeutas">
+                <datalist id="terapeutas">
+                    {{#each terapeutas}}
+                        <option value="{{ cpf }}">{{nome}}</option>
+                    {{/each}}
+                </datalist>
+            <button type="submit" class="btn btn-success mt-3">Buscar</button>
+        </form>
+    </div>
+</div>
+<hr>
+{{#if terapeuta}}
+<div class="card">
+    <div class="card-body">
+        <form action="/admin/alterar-terapeuta" method="POST">
+                <input type="text" name="_id" hidden value="{{terapeuta._id}}">
+            <label for="nome">Nome: </label>
+                <input type="text" name="nome" class="form-control" value="{{terapeuta.nome}}" required>
+            <label for="data_nascimento">Data de nascimento: </label>
+                <input type="date" name="data_nascimento" class="form-control" value="{{dateFormatiso terapeuta.data_nascimento}}" required>
+            <label for="rg">RG: </label>
+                <input type="text" name="rg" class="form-control" value="{{terapeuta.rg}}" required>
+            <label for="cpf">CPF: </label>
+                <input type="text" name="cpf" class="form-control" value="{{terapeuta.cpf}}" required>
+            <label for="telefone_1">Telefone: </label>
+                <input type="text" name="telefone_1" class="form-control" value="{{terapeuta.telefone_1}}" required>
+            <label for="telefone_2">Telefone 2: </label>
+                <input type="text" name="telefone_2" value="{{terapeuta.telefone_2}}" class="form-control">
+            <label for="email">Email: </label>
+                <input type="email" name="email" value="{{terapeuta.email}}" class="form-control" required>
+            <label for="especialidade">Especialidade: </label>
+                <select name="especialidade" class="custom-select" required>
+                    {{#select terapeuta.especialidade}}
+                        {{#each especialidades}}
+                            <option value="{{_id}}">{{nome}}</option>
+                        {{/each}}
+                    {{/select}}
+                </select>
+            <label for="acerto">Periodicidade do pagamento: </label>
+                <select name="acerto" class="custom-select" required>
+                    {{#select terapeuta.acerto}}
+                    <option value="0">Diário</option>
+                    <option value="1">Semanal</option>
+                    <option value="2">Mensal</option>
+                    {{/select}}
+                </select>
+            <button class="btn btn-success mt-4" type="submit">Alterar</button>
+        </form>
+    </div>
+</div>
+{{else}}
+<div class="card">
+    <div class="card-body">
+        <p>Busque pelo nome ou CPF para editar um cadastro!</p>
+    </div>
+</div>
+{{/if}}
