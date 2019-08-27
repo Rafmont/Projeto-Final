@@ -400,4 +400,51 @@ router.post("/alterar-terapeuta", verifica_gerente, (req, res) => {
     }
 })
 
+router.get("/desativar-terapeuta", verifica_gerente, (req, res) => {
+    Terapeuta.find({ativo: true}).populate("especialidade").then((terapeutas) => {
+        if(terapeutas) {
+            res.render("terapeutas/desativar-terapeuta", {terapeutas: terapeutas})
+        } else {
+            req.flash("Nenhum terapêuta cadastrado!")   
+        }
+        
+    }).catch((err) => {
+        req.flash("error_msg", "Falha ao encontrar os terapêutas")
+        res.redirect("/dashboard")
+    })
+})
+
+router.post("/busca-desativar-terapeuta", verifica_gerente, (req, res) => {
+    Terapeuta.findOne({cpf: req.body.busca_cpf, ativo: true}).populate("especialidade").then((terapeuta) => {
+        if(terapeuta) {
+            Terapeuta.find().then((terapeutas) => {
+                res.render("terapeutas/desativar-terapeuta", {terapeuta: terapeuta, terapeutas: terapeutas})
+            })
+        } else {
+            req.flash("error_msg", "Erro ao encontrar terapêuta")
+            res.redirect("/admin/desativar-terapeuta")
+        }   
+    }).catch((err) => {
+        req.flash("error_msg", "Erro ao encontrar terapeuta!")
+        res.redirect("/dashboard")
+        console.log(err)
+    })
+})
+
+
+router.post("/desativar-terapeuta", verifica_gerente, (req, res) => {
+    Terapeuta.findOne({_id: req.body._id}).then((terapeuta) => {
+        terapeuta.ativo = false
+        terapeuta.save().then(() => {
+            req.flash("success_msg", "Terapêuta desativado com sucesso!")
+            res.redirect("/dashboard")
+        }).catch((err) => {
+            req.flash("error_msg", "Erro ao desativar terapêuta!")
+            res.redirect("/dashboard")
+        })
+    }).catch((err) => {
+        req.flash("error_msg", "Erro ao encontrar terapêuta!")
+        res.redirect("/dashboard")
+    })
+})
 module.exports = router
