@@ -366,7 +366,7 @@ router.post("/alterar-terapeuta", verifica_gerente, (req, res) => {
     if(erros.length > 0) {
         res.render("admin/cadastro-terapeuta", {erros: erros})
     }else {
-        Terapeuta.findOne({_id: req.body._id}).then((terapeuta) => {
+        Terapeuta.findOne({_id: req.body._id, ativo: true}).then((terapeuta) => {
             if (req.body.telefone_2) {
                 tel2 = req.body.telefone_2
             } else {
@@ -388,7 +388,7 @@ router.post("/alterar-terapeuta", verifica_gerente, (req, res) => {
             terapeuta.save().then(() => {
                 req.flash("success_msg", "Dados alterados com sucesso!")
                 res.redirect("/dashboard")
-            }).catch((err) => {
+            }).catch((err) => { 
                 req.flash("error_msg", "Erro ao salvar dados alterados!")
                 res.redirect("/dashboard")
             })

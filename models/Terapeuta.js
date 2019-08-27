@@ -46,6 +46,10 @@ const Terapeuta = new Schema({
         type: Number,
         default: 1
         //Padão para terapeuta.
+    },
+    ativo: {
+        type: Boolean,
+        default: true
     }
 })
 
