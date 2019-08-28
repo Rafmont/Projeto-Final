@@ -34,7 +34,10 @@ const {verifica_login} = require("../helpers/verifica_login")
 const {verifica_clinico} = require("../helpers/verifica_clinico")
 require("../models/ContaAcesso")
 const ContaAcesso = mongoose.model("contasacesso")
-
+require("../models/Terapeuta")
+const Terapeuta = mongoose.model("terapeutas")
+require("../models/Fatura-Consulta")
+const FaturaConsulta = mongoose.model("faturasconsultas")
 
 router.get('/cadastro-funcionario',  (req, res) => {
     res.render("funcionarios/cadastro-funcionario")
@@ -521,9 +524,9 @@ router.get("/escolher-clinico", verifica_atendente, (req, res) => {
 
 router.get("/agendar-atendimento", verifica_atendente, (req, res) => {
     Servico.find().then((servicos) => {
-        Usuario.find({nivel_usuario: {$eq: 1}}).then((clinicos) => {
+        Terapeuta.find({ativo: true}).then((terapeutas) => {
              Hospede.find().then((hospedes) => {
-                res.render("clinicos/agendar-atendimento", {servicos: servicos, clinicos: clinicos, hospedes: hospedes})
+                res.render("clinicos/agendar-atendimento", {servicos: servicos, terapeutas: terapeutas, hospedes: hospedes})
              }).catch((err) => {
                  req.flash("error_msg", "Não foi possível encontrar os hóspedes")
                  res.redirect("/dashboard")
@@ -536,99 +539,90 @@ router.get("/agendar-atendimento", verifica_atendente, (req, res) => {
     }).catch((err) => {
         req.flash("error_msg", "Não foi possível encontrar os serviços")
         res.redirect("/dashboard")
+        console.log(err)
     })
 
 })
 
 router.post("/agendar-atendimento", verifica_atendente, (req, res) => {
     Hospede.findOne({cpf: req.body.cpf_hospede}).then((hospede) => {
-        if(hospede.tem_fatura == true) {
-            Servico.findOne({_id: req.body.servico}).then((ser_e) => {
-                Usuario.findOne({cpf: req.body.cpf_clinico}).then((clinico) => {
-                    var novaData = moment(req.body.data_consulta, "YYYY-MM-DD")
-                    const novaConsulta = new Consulta({
-                        clinico: clinico._id,
-                        cliente: hospede._id,
-                        servico: ser_e,
-                        fatura: hospede.fatura._id,
-                        sala: req.body.sala,
-                        data_consulta: novaData,
-                        horario: req.body.horario
-                    })
-        
-                    novaConsulta.save().then(() => {
-                        hospede.fatura.valor_total = hospede.fatura.valor_total + novaConsulta.servico.valor
-                        hospede.save().then(() => {
-                            req.flash("success_msg", "Consulta agendada!")
-                            res.redirect("/dashboard")
-                        }).catch((err) => {
-                            req.flash("error_msg", "Erro ao atualizar fatura")
-                            res.redirect("/dashboard")
-                            console.log("ErRO: ", err)
-                        })
-                    }).catch((err) => {
-                        req.flash("error_msg", "Erro ao salvar consulta.")
-                        res.redirect("/dashboard")
-                        console.log("Erro: ", err)
-                    })
-                }).catch((err) => {
-                    req.flash("error_msg", "Não foi possível encontrar o clínico.")
-                    res.redirect("/dashboard")
-                })
-            })
-        }else {
-            Usuario.findOne({cpf: req.body.cpf_clinico}).then((clinico) => {
+        Fatura.findOne({hospede: hospede._id, ativa: true}).then((fatura) => {
+            if(fatura) {
+                res.redirect("/dashboard")
+            } else {
                 const novaFatura = new Fatura({
-                    cpf_hospede: hospede.cpf,
+                    hospede: hospede._id,
                 })
                 novaFatura.save().then(() => {
-                    hospede.fatura = novaFatura._id
-                    hospede.save().then(() => {
-                        var novaData = moment(req.body.data_consulta, "YYYY-MM-DD")
-                        const novaConsulta = new Consulta({
-                            clinico: clinico._id,
-                            cliente: hospede._id,
-                            servico: req.body.servico,
-                            fatura: hospede.fatura._id,
-                            sala: req.body.sala,
-                            data_consulta: novaData,
-                            horario: req.body.horario
-                        })
-            
-                        novaConsulta.save().then(() => {
-                            hospede.fatura.valor_total = hospede.fatura.valor_total + novaConsulta.servico.valor
-                            hospede.save().then(() => {
-                                req.flash("success_msg", "Consulta agendada!")
-                                res.redirect("/dashboard")
+                    Terapeuta.findOne({cpf: req.body.cpf_terapeuta}).then((terapeuta) => {
+                        Servico.findOne({_id: req.body.servico}).then((servico) => {
+                            const novaConsulta = new Consulta({
+                                terapeuta: terapeuta._id,
+                                cliente: hospede._id,
+                                servico: req.body.servico,
+                                sala: req.body.sala,
+                                data_consulta: req.body.data_consulta,
+                                horario: req.body.horario,
+                                valor_consulta: servico.valor,
+                            })
+                            novaConsulta.save().then(() => {
+                                const novaFaturaConsulta = new FaturaConsulta({
+                                    fatura: novaFatura._id,
+                                    consulta: novaConsulta._id,
+                                })
+                                novaFaturaConsulta.save().then(() => {
+                                    novaConsulta.faturaconsulta = novaFaturaConsulta._id
+                                    novaConsulta.save().then(() => {
+                                        valor_anterior = novaFatura.valor_total,
+                                        novo_valor = valor_anterior + servico.valor,
+                                        novaFatura.valor_total = novo_valor
+                                        novaFatura.save().then(() => {
+                                            req.flash("success_msg", "Sucesso ao agendar consulta!")
+                                            res.redirect("/dashboard")
+                                        }).catch((err) => {
+                                            req.flash("error_msg", "Erro ao atualizar valor total de fatura!")
+                                            res.redirect("/dashboard")
+                                            console.log(err)
+                                        })
+                                    }).catch((err) => {
+                                        req.flash("error_msg", "Erro ao atualizar consulta referente fatura")
+                                        res.redirect("/dashboard")
+                                    })
+                                }).catch((err) => {
+                                    req.flash("error_msg", "Erro ao salvar fatura-consulta")
+                                    res.redirect("/dashboard")
+                                    console.log(err)
+                                })
                             }).catch((err) => {
-                                req.flash("error_msg", "Erro ao atualizar fatura")
+                                req.flash("error_msg", "Erro ao salvar consulta!")
                                 res.redirect("/dashboard")
-                                console.log("ErRO: ", err)
+                                console.log(err)
                             })
                         }).catch((err) => {
-                            req.flash("error_msg", "Erro ao salvar consulta.")
+                            req.flash("error_msg", "Erro ao encontrar serviço!")
                             res.redirect("/dashboard")
-                            console.log("Erro: ", err)
+                            console.log(err)
                         })
                     }).catch((err) => {
-                        req.flash("error_msg", "Não foi possível salvar a fatura.")
+                        req.flash("error_msg", "Erro ao buscar terapêuta!")
                         res.redirect("/dashboard")
-                        console.log("ERRO: ", err)
+                        console.log(err)
                     })
                 }).catch((err) => {
-                    req.flash("error_msg", "Não foi possível salvar a fatura.")
+                    req.flash("error_msg", "Erro ao salvar fatura!")
                     res.redirect("/dashboard")
-                    console.log("ERRO: ", err)
+                    console.log(err)
                 })
-            }).catch((err) => {
-                req.flash("error_msg", "Erro ao encontrar clínico")
-                res.redirect("/dashboar")
-            })
-            
-        }
+            }
+        }).catch((err) => {
+            req.flash("error_msg", "Erro ao encontrar fatura!")
+            res.redirect("/dashboard")
+            console.log(err)
+        })
     }).catch((err) => {
-        req.flash("error_msg", "Não foi possível encontrar o hospede.")
-        res.redirect("/usuario/escolher-clinico")
+        req.flash("error_msg", "Erro ao encontrar hóspede no banco de dados!")
+        res.redirect("/dashboard")
+        console.log(err)
     })
 })
 

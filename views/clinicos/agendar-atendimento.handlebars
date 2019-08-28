@@ -2,10 +2,10 @@
 <div class="card">
     <div class="card-body">
         <form action="/usuario/agendar-atendimento" method="POST">
-            <label for="cpf_clinico">Clínico:</label>
-                <input type="text" name="cpf_clinico" class="form-control" list="clinicos">
-                <datalist id="clinicos">
-                    {{#each clinicos}}
+            <label for="cpf_clinico">Terapêuta:</label>
+                <input type="text" name="cpf_terapeuta" class="form-control" list="terapeutas">
+                <datalist id="terapeutas">
+                    {{#each terapeutas}}
                         <option value="{{ cpf }}">{{nome}}</option>
                     {{/each}}
                 </datalist>

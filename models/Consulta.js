@@ -2,9 +2,9 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const Consulta = new Schema({
-    clinico: {
+    terapeuta: {
         type: Schema.Types.ObjectId,
-        ref: "usuarios",
+        ref: "terapeutas",
         required: true
     },
     cliente: {
@@ -17,9 +17,9 @@ const Consulta = new Schema({
         ref: "servicos",
         required: true
     },
-    fatura: {
+    faturaconsulta: {
         type: Schema.Types.ObjectId,
-        ref: "faturas",
+        ref: "faturasconsultas"
     },
     sala: {
         type: String,
@@ -31,6 +31,10 @@ const Consulta = new Schema({
     },
     horario: {
         type: String,
+        required: true
+    },
+    valor_consulta: {
+        type: Number,
         required: true
     }
     
