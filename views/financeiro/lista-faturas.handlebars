@@ -1,0 +1,21 @@
+
+<h3>Faturas em aberto:</h3>
+<div class="card">
+    
+    <div class="card-body">
+        <table class="table">
+            <tr style="text-align: center;">
+                <th>Nome</th>
+                <th>Valor total (R$)</th>
+                <th>Ver detalhes</th>
+            </tr>
+            {{#each faturas}}
+            <tr style="text-align: center;">
+                <td>{{hospede.nome}}</td>
+                <td>{{valor_total}}</td>
+                <td><a href="/admin/ver-fatura/{{_id}}"><img src="/img/lista.png" alt="lista"></a></td>
+            </tr>
+            {{/each}}    
+        </table>
+    </div>
+</div>

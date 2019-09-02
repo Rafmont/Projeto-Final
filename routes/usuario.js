@@ -544,11 +544,65 @@ router.get("/agendar-atendimento", verifica_atendente, (req, res) => {
 
 })
 
+//Rotina de agendar o atendimento, verifica se o cliente já possui uma fatura em aberto no sistema.
 router.post("/agendar-atendimento", verifica_atendente, (req, res) => {
     Hospede.findOne({cpf: req.body.cpf_hospede}).then((hospede) => {
         Fatura.findOne({hospede: hospede._id, ativa: true}).then((fatura) => {
             if(fatura) {
-                res.redirect("/dashboard")
+                Servico.findOne({_id: req.body.servico}).then((servico) => {
+                    Terapeuta.findOne({cpf: req.body.cpf_terapeuta}).then((terapeuta) => {
+                        const novaConsulta = new Consulta({
+                            terapeuta: terapeuta._id,
+                            cliente: hospede._id,
+                            servico: req.body.servico,
+                            sala: req.body.sala,
+                            data_consulta: req.body.data_consulta,
+                            horario: req.body.horario,
+                            valor_consulta: servico.valor,
+                        })
+                        novaConsulta.save().then(() => {
+                            const novaFaturaConsulta = new FaturaConsulta({
+                                fatura: fatura._id,
+                                consulta: novaConsulta._id,
+                            })
+                            novaFaturaConsulta.save().then(() => {
+                                novaConsulta.faturaconsulta = novaFaturaConsulta._id
+                                novaConsulta.save().then(() => {
+                                    valor_anterior = fatura.valor_total,
+                                    novo_valor = valor_anterior + servico.valor,
+                                    fatura.valor_total = novo_valor
+                                    fatura.save().then(() => {
+                                        req.flash("success_msg", "Sucesso ao agendar consulta!")
+                                        res.redirect("/dashboard")
+                                    }).catch((err) => {
+                                        req.flash("error_msg", "Erro ao atualizar valor total de fatura!")
+                                        res.redirect("/dashboard")
+                                        console.log(err)
+                                    })
+                                }).catch((err) => {
+                                    req.flash("error_msg", "Erro ao atualizar consulta referente fatura")
+                                    res.redirect("/dashboard")
+                                })
+                            }).catch((err) => {
+                                req.flash("error_msg", "Erro ao salvar fatura-consulta")
+                                res.redirect("/dashboard")
+                                console.log(err)
+                            })
+                        }).catch((err) => {
+                            req.flash("error_msg", "Erro ao salvar nova consulta!")
+                            res.redirect("/dashboard")
+                            console.log(err)
+                        })
+                    }).catch((err) => {
+                        req.flash("error_msg", "Erro ao encontrar o terapêuta!")
+                        res.redirect("/dashboard")
+                        console.log(err)
+                    })
+                }).catch((err) => {
+                    req.flash("error_msg", "Erro ao encontrar serviço!")
+                    res.redirect("/dashboard")
+                    console.log(err)
+                })
             } else {
                 const novaFatura = new Fatura({
                     hospede: hospede._id,
@@ -1027,6 +1081,7 @@ router.post("/busca-estadia", verifica_atendente, (req, res) => {
 
     
 })
+
 
 
 
