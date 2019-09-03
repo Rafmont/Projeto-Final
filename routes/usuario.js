@@ -1057,93 +1057,6 @@ router.post("/check-in", verifica_atendente, (req, res) => {
             res.redirect("/usuario/quartos")
             console.log(err)
         })
-        
-        
-        /*if(hospede.tem_fatura == false) {
-            const novaFatura = new Fatura({
-                cpf_hospede: hospede.cpf 
-            })
-            novaFatura.save().then(() => {
-                hospede.fatura = novaFatura._id
-                hospede.save().then(() => {
-                    var novaData = moment(req.body.data_saida, "YYYY-MM-DD")
-                    const novaEstadia = new Estadia({
-                        quarto: req.body.id_quarto,
-                        hospede: hospede._id,
-                        fatura: hospede.fatura._id,
-                        diarias: req.body.diarias,
-                        data_saida: novaData
-                    })
-            
-                    novaEstadia.save().then(() => {
-                        Quarto.findOne({_id: req.body.id_quarto}).then((quarto) => {
-                            hospede.fatura.valor_total = hospede.fatura.valor_total + (quarto.diaria * req.body.diarias)
-                            hospede.save().then(() => {
-                                quarto.estado = "ocupado"
-                                quarto.save().then(() => {
-                                    req.flash("success_msg", "Check-in realizado com sucesso!")
-                                    res.redirect("/usuario/quartos")
-                                }).catch((err) => {
-                                    req.flash("error_msg", "Erro ao alterar estado do quarto.")
-                                    res.redirect("/usuario/quartos")
-                                })
-                            }).catch((err) => {
-                                req.flash("error_msg", "Erro ao atualizar fatura.")
-                                res.redirect("/usuario/quartos")
-                            })
-                        }).catch((err) => {
-                            req.flash("error_msg", "Erro ao encontrar quarto para adicionar a fatura")
-                            res.redirect("/usuario/quartos")
-                        })
-                        
-                    }).catch((err) => {
-                        req.flash("error_msg", "Erro ao salvar nova estadia.")
-                        res.redirect("/usuario/quarto")
-                    })
-                }).catch((err) => {
-                    req.flash("error_msg", "Erro ao adicionar fatura ao hospede.")
-                    res.redirect("/usuario/quartos")
-                })
-            }).catch((err) => {
-                req.flash("error_msg", "Erro ao criar uma fatura")
-                res.redirect("/usuario/quartos")
-            })
-        } else {
-            var novaData = moment(req.body.data_saida, "YYYY-MM-DD")
-            const novaEstadia = new Estadia({
-                quarto: req.body.id_quarto,
-                hospede: hospede._id,
-                fatura: hospede.fatura._id,
-                diarias: req.body.diarias,
-                data_saida: novaData
-            })
-    
-            novaEstadia.save().then(() => {
-                Quarto.findOne({_id: req.body.id_quarto}).then((quarto) => {
-                    hospede.fatura.valor_total = hospede.fatura.valor_total + (quarto.diaria * req.body.diarias)
-                    hospede.save().then(() => {
-                        quarto.estado = "ocupado"
-                        quarto.save().then(() => {
-                            req.flash("success_msg", "Check-in realizado com sucesso!")
-                            res.redirect("/usuario/quartos")
-                        }).catch((err) => {
-                            req.flash("error_msg", "Erro ao alterar estado do quarto.")
-                            res.redirect("/usuario/quartos")
-                        })
-                    }).catch((err) => {
-                        req.flash("error_msg", "Erro ao atualizar fatura.")
-                        res.redirect("/usuario/quartos")
-                    })
-                }).catch((err) => {
-                    req.flash("error_msg", "Erro ao encontrar quarto para adicionar a fatura")
-                    res.redirect("/usuario/quartos")
-                })
-                
-            }).catch((err) => {
-                req.flash("error_msg", "Erro ao salvar nova estadia.")
-                res.redirect("/usuario/quarto")
-            })
-        }*/
     }).catch((err) => {
         req.flash("error_msg", "Erro ao encontrar hóspede.")
         res.redirect("/usuario/quartos")
@@ -1235,7 +1148,14 @@ router.get("/ver-fatura/:id", verifica_atendente, (req, res) => {
     Fatura.findOne({_id: req.params.id}).then((fatura) => {
         Consulta.find({fatura: fatura._id}).populate("servico").populate("terapeuta").then((consultas) => {
             Hospede.findOne({_id: fatura.hospede}).then((cliente) => {
-                res.render("financeiro/fatura-detalhada", {consultas: consultas, cliente: cliente, fatura: fatura})
+                Estadia.findOne({hospede: cliente._id, ativa: true}).then((estadia) => {
+                    res.render("financeiro/fatura-detalhada", {consultas: consultas, cliente: cliente, fatura: fatura, estadia: estadia})
+                }).catch((err) => {
+                    req.flash("error_msg", "Erro ao encontrar estadia da fatura.")
+                    res.redirect("/dashboard")
+                    console.log(err)
+                })
+                
             }).catch((err) => {
                 req.flash("error_msg", "Erro ao econtrar cliente.")
                 res.redirect("/dashboard")

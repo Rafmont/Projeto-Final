@@ -1,6 +1,25 @@
 <h3>Fatura {{cliente.nome}}</h3>
 <div class="card">
     <div class="card-body">
+        {{#if estadia}}
+        <h5>Estadia</h5>
+        <table class="table">
+            <tr style="text-align: center">
+                <th>Data de Check-In</th>
+                <th>Data de Check-Out</th>
+                <th>Diárias</th>
+                <th>Valor</th>
+            </tr>
+            <tr style="text-align: center">
+                <td>{{dateFormat estadia.data_entrada}}</td>
+                <td>{{dateFormat estadia.data_saida}}</td>
+                <td>{{estadia.diarias}}</td>
+                <td><strong>$ {{estadia.valor_estadia}}</strong></td>
+            </tr>
+        </table>
+        <hr>
+        {{/if}}
+        {{#if consultas}}
         <h5>Consultas</h5>
         <table class="table">
             <tr style="text-align: center;">
@@ -20,6 +39,7 @@
             </tr>
             {{/each}}            
         </table>
+        {{/if}}
         <hr>
         <p style="text-align:right; margin-right: 5%;"><strong>Valor total: R$ {{fatura.valor_total}}</strong></p>
         <hr>
