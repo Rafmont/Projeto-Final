@@ -12,10 +12,7 @@
                         <option value="{{ cpf }}">{{nome}}</option>
                     {{/each}}
                 </datalist>
-                
-            <label class="mt-2">Valor da diária: <strong>{{quarto.diaria}}</strong></label><br>
-            <label for="diarias">Diárias: </label>
-                <input type="number" name="diarias" class="form-control" required>
+
             <label for="data_saida">Data de Saída: </label>
                 <input type="Date" name="data_saida" class="form-control" required>
             <button class="btn btn-success mt-4" type="submit">Check-in</button>

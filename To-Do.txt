@@ -42,9 +42,16 @@ ATUALMENTE TRABALHANDO EM:
 
 Separação das contas de acesso. Alterar todos os arquivos para que se adequêm e o novo sistema de login seja concluido (X)
 
-Corrigir o que o clínico pode ver ou não. ()
+Corrigir o que o clínico pode ver ou não. (X)
 
-Fazer o agendamento de consultas 2.0, já com a implementação de uma fatura. ()
+Fazer o agendamento de consultas 2.0, já com a implementação de uma fatura. (X)
+
+Realizar a visualização da fatura. (X)
+
+Adicionar Estadias a fatura. ()
+
+Adiconar produtos a fatura. ()
+
 
 
 

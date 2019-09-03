@@ -41,10 +41,6 @@ const Hospede = new Schema({
         ref: "faturas",
         required: false
     },
-    tem_fatura: {
-        type: Boolean,
-        default: false
-    } 
 })
 
 mongoose.model("hospedes", Hospede)

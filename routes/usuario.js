@@ -924,9 +924,144 @@ router.get("/check-in/:id", verifica_atendente, (req, res) => {
 
 router.post("/check-in", verifica_atendente, (req, res) => {
     Hospede.findOne({cpf: req.body.cpf_hospede}).then((hospede) => {
-        if(hospede.tem_fatura == false) {
+        Fatura.findOne({hospede: hospede._id, ativa: true}).then((fatura) => {
+            if(fatura) {
+                var novaData = moment(req.body.data_saida, "YYYY-MM-DD")
+                //Cálculo dos dias da estadia utilizando moment.js
+                var a = moment(Date.now())
+                var b = moment(req.body.data_saida)
+                var duration = moment.duration(a.diff(b))
+                var dias = duration.asDays();
+                var dias = dias * -1
+                var dias = dias + 1
+                var diarias = Math.round(dias)
+                //--
+                const novaEstadia = new Estadia({
+                    quarto: req.body.id_quarto,
+                    hospede: hospede._id,
+                    fatura: fatura._id,
+                    diarias: diarias,
+                    data_saida: novaData
+                })
+                novaEstadia.save().then(() => {
+                    Quarto.findOne({_id: req.body.id_quarto}).then((quarto) => {
+                        quarto.estado = "ocupado"
+                        quarto.save().then(() => {
+                            valor_anterior = fatura.valor_total,
+                            valor_estadia = quarto.diaria * novaEstadia.diarias
+                            novo_valor = valor_anterior + valor_estadia,
+                            fatura.valor_total = novo_valor
+                            fatura.save().then(() => {
+                                novaEstadia.valor_estadia = valor_estadia
+                                novaEstadia.save().then(() => {
+                                    req.flash("success_msg", "Estadia realizada com sucesso!")
+                                    res.redirect("/usuario/quartos")
+                                }).catch((err) => {
+                                    req.flash("error_msg", "Erro ao salvar valor da estadia!")
+                                    res.redirect("/usuario/quartos")
+                                })            
+                            }).catch((err) => {
+                                req.flash("error_msg", "Erro ao salvar fatura!!")
+                                res.redirect("/dashboard")
+                                console.log(err)
+                            })
+                        }).catch((err) => {
+                            req.flash("error_msg", "Erro ao salvar quarto!")
+                            res.redirect("/dashboard")
+                            console.log(err)
+                        })
+                    }).catch((err) => {
+                        req.flash("error_msg", "Erro ao encontrar quarto!")
+                        res.redirect("/dashboard")
+                        console.log(err)
+                    })
+                }).catch((err) => {
+                    req.flash("error_msg", "Erro ao salvar nova estadia!")
+                    res.redirect("/dashboard")
+                    console.log(err)
+                })
+            } else {
+                const novaFatura = new Fatura({
+                    hospede: hospede._id
+                })
+                novaFatura.save().then(() => {
+                    hospede.fatura = novaFatura._id
+                    hospede.save().then(() => {
+                        var novaData = moment(req.body.data_saida, "YYYY-MM-DD")
+                        //Cálculo dos dias da estadia utilizando moment.js
+                        var a = moment(Date.now())
+                        var b = moment(req.body.data_saida)
+                        var duration = moment.duration(a.diff(b))
+                        var dias = duration.asDays();
+                        var dias = dias * -1
+                        var dias = dias + 1
+                        var diarias = Math.round(dias)
+                        //--
+                        const novaEstadia = new Estadia({
+                            quarto: req.body.id_quarto,
+                            hospede: hospede._id,
+                            fatura: novaFatura._id,
+                            diarias: diarias,
+                            data_saida: novaData
+                        })
+                        novaEstadia.save().then(() => {
+                            Quarto.findOne({_id: req.body.id_quarto}).then((quarto) => {
+                                quarto.estado = "ocupado"
+                                quarto.save().then(() => {
+                                    valor_anterior = fatura.valor_total,
+                                    valor_estadia = quarto.diaria * novaEstadia.diarias
+                                    novo_valor = valor_anterior + valor_estadia,
+                                    fatura.valor_total = novo_valor
+                                    novaFatura.save().then(() => {
+                                        novaEstadia.valor_estadia = valor_estadia
+                                        novaEstadia.save().then(() => {
+                                            req.flash("success_msg", "Estadia realizada com sucesso!")
+                                            res.redirect("/usuario/quartos")
+                                        }).catch((err) => {
+                                            req.flash("error_msg", "Erro ao salvar valor da estadia!")
+                                            res.redirect("/usuario/quartos")
+                                        })    
+                                    }).catch((err) => {
+                                        req.flash("error_msg", "Erro ao salvar fatura!!")
+                                        res.redirect("/dashboard")
+                                        console.log(err)
+                                    })
+                                }).catch((err) => {
+                                    req.flash("error_msg", "Erro ao salvar quarto!")
+                                    res.redirect("/dashboard")
+                                    console.log(err)
+                                })
+                            }).catch((err) => {
+                                req.flash("error_msg", "Erro ao encontrar quarto!")
+                                res.redirect("/dashboard")
+                                console.log(err)
+                            })
+                        }).catch((err) => {
+                            req.flash("error_msg", "Erro ao salvar nova estadia!")
+                            res.redirect("/dashboard")
+                            console.log(err)
+                        })
+                    }).catch((err) => {
+                        req.flash("error_msg", "Erro ao adicionar fatura ao hóspede!")
+                        res.redirect("/dasboard")
+                        console.log(err)
+                    })
+                }).catch((err) => {
+                    req.flash("error_msg", "Erro ao salvar nova fatura!")
+                    res.redirect("/dashboard")
+                    console.log(err)
+                })
+            }
+        }).catch((err) => {
+            req.flash("error_msg", "Erro ao encontrar fatura!")
+            res.redirect("/usuario/quartos")
+            console.log(err)
+        })
+        
+        
+        /*if(hospede.tem_fatura == false) {
             const novaFatura = new Fatura({
-                cpf_hospede: hospede.cpf
+                cpf_hospede: hospede.cpf 
             })
             novaFatura.save().then(() => {
                 hospede.fatura = novaFatura._id
@@ -1008,7 +1143,7 @@ router.post("/check-in", verifica_atendente, (req, res) => {
                 req.flash("error_msg", "Erro ao salvar nova estadia.")
                 res.redirect("/usuario/quarto")
             })
-        }
+        }*/
     }).catch((err) => {
         req.flash("error_msg", "Erro ao encontrar hóspede.")
         res.redirect("/usuario/quartos")

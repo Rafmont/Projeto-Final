@@ -20,6 +20,7 @@ const Evento = mongoose.model("eventos")
 const {verifica_login} = require("./helpers/verifica_login")
 require("./models/ContaAcesso")
 const ContaAcesso = mongoose.model("contasacesso")
+const DateCalculator = require('date-calculator')
 
 //Configurações
 //Sessão
@@ -161,6 +162,25 @@ const ContaAcesso = mongoose.model("contasacesso")
         req.logout()
         req.flash("success_msg", "Deslogado com sucesso!")
         res.redirect("/")
+    })
+
+    app.get("/teste-calculadora", (req, res) => {
+        res.render("teste")
+    })
+
+    app.post("/calcula-data", (req, res) => {
+        console.log(moment.utc(moment(Date.now,"DD/MM/YYYY HH:mm:ss").diff(moment(req.body.data,"DD/MM/YYYY HH:mm:ss"))).format("HH:mm:ss"))
+
+        var a = moment(Date.now())
+        var b = moment(req.body.data)
+        var duration = moment.duration(a.diff(b))
+        var dias = duration.asDays();
+        var dias = dias * -1
+        var dias = dias + 1
+        var dias = Math.round(dias)
+        console.log(dias)
+
+        res.render("teste")
     })
 
     app.use('/usuario', rotas_usuario)

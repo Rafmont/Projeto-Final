@@ -32,6 +32,9 @@ const Estadia = new Schema({
     ativa: {
         type: Boolean,
         default: true
+    },
+    valor_estadia: {
+        type: Number,
     }
 })
 
