@@ -36,6 +36,10 @@ const Consulta = new Schema({
     valor_consulta: {
         type: Number,
         required: true
+    },
+    fatura: {
+        type: Schema.Types.ObjectId,
+        ref: "faturas"
     }
     
 })

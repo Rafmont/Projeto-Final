@@ -25,6 +25,12 @@ const ContaAcesso = new Schema({
     nivel_usuario: {
         type: Number,
         required: true
+        /*
+        0: Atendente
+        1: Terapeuta
+        2: Gerente
+        3: Administrador
+        */
     }
 })
 

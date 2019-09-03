@@ -4,7 +4,7 @@
 {{#if user}}
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto mx-5">
-        {{#ifcond user.nivel_usuario '!=' 1}}
+        {{#ifcond user.nivel_usuario '!=' 1}} 
         <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 Funcionarios
@@ -52,12 +52,17 @@
             </a>
             <div class="dropdown-menu">
                 <a class="dropdown-item" href="/usuario/produtos">Gerenciar</a>
-                <a class="dropdown-item" href="/usuario/alterar-produto">Realizar venda</a>
+                <a class="dropdown-item" href="/usuario/realizar-venda">Realizar venda</a>
             </div>
         </li>
         <li class="nav-item">
             <a class="nav-link mx-3" href="/usuario/quartos">Check-in e Check-out</a>
         </li>
+        {{#ifcond user.nivel_usuario '==' 3}}
+        <li class="nav-item">
+            <a class="nav-link mx-3" href="/usuario/listar-faturas">Faturas</a>
+        </li>
+        {{/ifcond}}
         {{else}}
         <a class="nav-link mx-2" href="/usuario/atendimentos-marcados/{{user._id}}">
             Atendimentos Marcados

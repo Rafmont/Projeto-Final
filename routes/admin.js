@@ -450,14 +450,6 @@ router.post("/desativar-terapeuta", verifica_gerente, (req, res) => {
     })
 })
 
-router.get("/listar-faturas", verifica_gerente, (req, res) => {
-    Fatura.find({ativa: true}).populate("hospede").then((faturas) => {
-        res.render("financeiro/lista-faturas", {faturas: faturas})
-    }).catch((err) => {
-        req.flash("error_msg", "Erro ao encontrar faturas")
-        res.redirect("/dashboard")
-        console.log(err)
-    })
-})
+
 
 module.exports = router

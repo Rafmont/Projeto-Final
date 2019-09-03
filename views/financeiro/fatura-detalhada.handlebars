@@ -1,0 +1,31 @@
+<h3>Fatura {{cliente.nome}}</h3>
+<div class="card">
+    <div class="card-body">
+        <h5>Consultas</h5>
+        <table class="table">
+            <tr style="text-align: center;">
+                <th>Tipo de consulta</th>
+                <th>Terapêuta</th>
+                <th>Data</th>
+                <th>Horário</th>
+                <th>Valor</th>
+            </tr>
+            {{#each consultas}}
+            <tr style="text-align: center;">
+                <td>{{servico.nome}}</td>
+                <td>{{terapeuta.nome}}</td>
+                <td>{{dateFormat data_consulta}}</td>
+                <td>{{horario}}</td>
+                <td><strong>R$ {{valor_consulta}}</strong></td>
+            </tr>
+            {{/each}}            
+        </table>
+        <hr>
+        <p style="text-align:right; margin-right: 5%;"><strong>Valor total: R$ {{fatura.valor_total}}</strong></p>
+        <hr>
+
+        <div style="text-align:center">
+            <a href="usuario/encerrar-fatura/{{fatura._id}}"><button class="btn btn-success">Encerrar fatura</button></a>
+        </div>
+    </div>
+</div>

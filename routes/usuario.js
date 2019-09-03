@@ -38,6 +38,8 @@ require("../models/Terapeuta")
 const Terapeuta = mongoose.model("terapeutas")
 require("../models/Fatura-Consulta")
 const FaturaConsulta = mongoose.model("faturasconsultas")
+require("../models/FaturaProduto")
+const FaturaProduto = mongoose.model("faturaprodutos")
 
 router.get('/cadastro-funcionario',  (req, res) => {
     res.render("funcionarios/cadastro-funcionario")
@@ -559,6 +561,7 @@ router.post("/agendar-atendimento", verifica_atendente, (req, res) => {
                             data_consulta: req.body.data_consulta,
                             horario: req.body.horario,
                             valor_consulta: servico.valor,
+                            fatura: fatura._id
                         })
                         novaConsulta.save().then(() => {
                             const novaFaturaConsulta = new FaturaConsulta({
@@ -618,6 +621,7 @@ router.post("/agendar-atendimento", verifica_atendente, (req, res) => {
                                 data_consulta: req.body.data_consulta,
                                 horario: req.body.horario,
                                 valor_consulta: servico.valor,
+                                fatura: novaFatura._id
                             })
                             novaConsulta.save().then(() => {
                                 const novaFaturaConsulta = new FaturaConsulta({
@@ -1082,6 +1086,45 @@ router.post("/busca-estadia", verifica_atendente, (req, res) => {
     
 })
 
+router.get("/listar-faturas", verifica_atendente, (req, res) => {
+    Fatura.find({ativa: true}).populate("hospede").then((faturas) => {
+        res.render("financeiro/lista-faturas", {faturas: faturas})
+    }).catch((err) => {
+        req.flash("error_msg", "Erro ao encontrar faturas")
+        res.redirect("/dashboard")
+        console.log(err)
+    })
+})
+
+router.get("/ver-fatura/:id", verifica_atendente, (req, res) => {
+    Fatura.findOne({_id: req.params.id}).then((fatura) => {
+        Consulta.find({fatura: fatura._id}).populate("servico").populate("terapeuta").then((consultas) => {
+            Hospede.findOne({_id: fatura.hospede}).then((cliente) => {
+                res.render("financeiro/fatura-detalhada", {consultas: consultas, cliente: cliente, fatura: fatura})
+            }).catch((err) => {
+                req.flash("error_msg", "Erro ao econtrar cliente.")
+                res.redirect("/dashboard")
+                console.log(err)
+            })
+        }).catch((err) => {
+            req.flash("error_msg", "Erro ao encontrar consultas atraledas!")
+            res.redirect("/dashboard")
+            console.log(err)
+        })
+    }).catch((err) => {
+        req.flash("error_msg", "Erro ao encontrar fatura!")
+        res.redirect("/dashboard")
+        console.log(err)
+    })
+})
+
+router.get("/realizar-venda", verifica_atendente, (req, res) => {
+    Produto.find().then((produtos) => {
+        Hospede.find().then((hospedes) => {
+            
+        })
+    })
+})
 
 
 
