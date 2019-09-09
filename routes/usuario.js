@@ -693,8 +693,10 @@ router.get("/atendimentos-marcados", verifica_atendente, (req, res) => {
     })
 })
 
+//Rota que retorna as consultas de apenas um clínico
 router.get("/atendimentos-marcados/:id", verifica_clinico, (req, res) => {
-    Consulta.find({clinico: req.params.id}).populate("servico").populate("cliente").populate("clinico").then((consultas) => {
+    Consulta.find({terapeuta: req.params.id}).then((consultas) => {
+        console.log(consultas)
         res.render("clinicos/atendimentos-marcados", {consultas: consultas})
     }).catch((err) => {
         req.flash("Não foi possível encontrar as consultas.")
@@ -1008,10 +1010,10 @@ router.post("/check-in", verifica_atendente, (req, res) => {
                             Quarto.findOne({_id: req.body.id_quarto}).then((quarto) => {
                                 quarto.estado = "ocupado"
                                 quarto.save().then(() => {
-                                    valor_anterior = fatura.valor_total,
+                                    valor_anterior = novaFatura.valor_total,
                                     valor_estadia = quarto.diaria * novaEstadia.diarias
                                     novo_valor = valor_anterior + valor_estadia,
-                                    fatura.valor_total = novo_valor
+                                    novaFatura.valor_total = novo_valor
                                     novaFatura.save().then(() => {
                                         novaEstadia.valor_estadia = valor_estadia
                                         novaEstadia.save().then(() => {
@@ -1180,6 +1182,8 @@ router.get("/realizar-venda", verifica_atendente, (req, res) => {
         })
     })
 })
+
+
 
 
 

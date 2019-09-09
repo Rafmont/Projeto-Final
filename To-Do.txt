@@ -48,10 +48,23 @@ Fazer o agendamento de consultas 2.0, já com a implementação de uma fatura. (
 
 Realizar a visualização da fatura. (X)
 
-Adicionar Estadias a fatura. ()
+Adicionar Estadias a fatura. (X)
 
 Adiconar produtos a fatura. ()
 
 
 
 
+cores da agenda, lotação.
+
+disponibilidade
+
+implementar dois ou mais serviços numa consulta
+
+mostrar o valor do serviço.
+
+Tempo do serviço.
+
+limites de horarios.
+
+pensar - benefícios de hospedagem.
