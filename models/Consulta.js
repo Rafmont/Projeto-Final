@@ -33,6 +33,9 @@ const Consulta = new Schema({
         type: String,
         required: true
     },
+    horario_termino: {
+        type: String
+    },
     valor_consulta: {
         type: Number,
         required: true

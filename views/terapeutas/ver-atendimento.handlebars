@@ -1,0 +1,28 @@
+<h3>Consulta: </h3>
+<div class="card">
+    <div class="card-body" style="text-align:center">
+        <br>
+        <table class="table">
+            <tr>
+                <th>Cliente:</th>
+                <td>{{consulta.cliente.nome}}</td>
+            </tr>
+            <tr>
+                <th>Serviço:</th>
+                <td>{{consulta.servico.nome}}</td>
+            </tr>
+            <tr>
+                <th>Sala:</th>
+                <td>{{consulta.sala}}</td>
+            </tr>
+            <tr>
+                <th>Data:</th>
+                <td>{{dateFormat consulta.data_consulta}}</td>
+            </tr>
+            <tr>
+                <th>Horário:</th>
+                <td>{{consulta.horario}}</td>
+            </tr>
+        </table>
+    </div>
+</div>

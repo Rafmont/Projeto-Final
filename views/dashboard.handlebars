@@ -3,7 +3,7 @@
   document.addEventListener('DOMContentLoaded', function() {
     var calendarEl = document.getElementById('calendar');
     var calendar = new FullCalendar.Calendar(calendarEl, {
-      height: 550,
+      height: 800,
       plugins: [ 'interaction', 'dayGrid', 'timeGrid', 'list' ],
       header: {
         left: 'prev,next today',
@@ -34,7 +34,7 @@
               { 
                 title: '{{titulo}}',
                 start: '{{dateFormatiso data}}T{{horario}}',
-                color: '#D9534F',
+                color: '#bcbcbc',
                 id: '{{_id}}'
               }, 
             {{/has_passed}}
@@ -60,26 +60,6 @@
       {{/ifcond}}
           <div id='calendar'></div>
           <br><br>          
-    </div>
-</div>
-
-
-<!-- MODAL -->
-
-<div class="modal fade" id="modal-mensagem">
-   <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"><span>×</span></button>
-                <h4 class="modal-title">Título da mensagem</h4>
-            </div>
-            <div class="modal-body">
-                <p>Conteúdo da mensagem</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
-            </div>
-        </div>
     </div>
 </div>
 

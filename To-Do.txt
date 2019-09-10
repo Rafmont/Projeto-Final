@@ -57,7 +57,7 @@ Adiconar produtos a fatura. ()
 
 cores da agenda, lotação.
 
-disponibilidade
+disponibilidade dos horários.
 
 implementar dois ou mais serviços numa consulta
 

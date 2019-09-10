@@ -553,12 +553,13 @@ router.post("/agendar-atendimento", verifica_atendente, (req, res) => {
             if(fatura) {
                 Servico.findOne({_id: req.body.servico}).then((servico) => {
                     Terapeuta.findOne({cpf: req.body.cpf_terapeuta}).then((terapeuta) => {
+                        var novaData = moment(req.body.data_consulta, "YYYY-MM-DD")
                         const novaConsulta = new Consulta({
                             terapeuta: terapeuta._id,
                             cliente: hospede._id,
                             servico: req.body.servico,
                             sala: req.body.sala,
-                            data_consulta: req.body.data_consulta,
+                            data_consulta: novaData,
                             horario: req.body.horario,
                             valor_consulta: servico.valor,
                             fatura: fatura._id
@@ -613,12 +614,13 @@ router.post("/agendar-atendimento", verifica_atendente, (req, res) => {
                 novaFatura.save().then(() => {
                     Terapeuta.findOne({cpf: req.body.cpf_terapeuta}).then((terapeuta) => {
                         Servico.findOne({_id: req.body.servico}).then((servico) => {
+                            var novaData = moment(req.body.data_consulta, "YYYY-MM-DD")
                             const novaConsulta = new Consulta({
                                 terapeuta: terapeuta._id,
                                 cliente: hospede._id,
                                 servico: req.body.servico,
                                 sala: req.body.sala,
-                                data_consulta: req.body.data_consulta,
+                                data_consulta: novaData,
                                 horario: req.body.horario,
                                 valor_consulta: servico.valor,
                                 fatura: novaFatura._id
@@ -695,8 +697,7 @@ router.get("/atendimentos-marcados", verifica_atendente, (req, res) => {
 
 //Rota que retorna as consultas de apenas um clínico
 router.get("/atendimentos-marcados/:id", verifica_clinico, (req, res) => {
-    Consulta.find({terapeuta: req.params.id}).then((consultas) => {
-        console.log(consultas)
+    Consulta.find({terapeuta: req.params.id}).populate("cliente").then((consultas) => {
         res.render("clinicos/atendimentos-marcados", {consultas: consultas})
     }).catch((err) => {
         req.flash("Não foi possível encontrar as consultas.")
@@ -1184,7 +1185,16 @@ router.get("/realizar-venda", verifica_atendente, (req, res) => {
 })
 
 
-
+//Rotas para o terapêuta visualizar seu atendimento
+router.get("/ver-atendimento/:id", verifica_clinico, (req, res) => {
+    Consulta.findOne({_id: req.params.id}).populate("terapeuta").populate("cliente").populate("servico").then((consulta) => {
+        res.render("terapeutas/ver-atendimento", {consulta: consulta})
+    }).catch((err) => {
+        req.flash("error_msg", "Erro ao encontrar consulta!")
+        res.redirect("/dashboard")
+        console.log(err)
+    })
+})
 
 
 module.exports = router
