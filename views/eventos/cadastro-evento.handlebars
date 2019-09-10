@@ -4,14 +4,22 @@
         <form action="/admin/cadastro-evento" method="POST">
             <label for="titulo">Título: </label>
                 <input type="text" name="titulo" class="form-control" required>
+
             <label for="descricao">Descrição: </label>
                 <textarea name="descricao" class="form-control"></textarea>
-            <label for="horario">Horário de inicio: </label>
-                <input type="time" name="horario" class="form-control" required>
-            <label for="horario_termino">Horário de encerramento<small> (não obrigatório)</small>:</label>
-                <input type="time" name="horario_termino" class="form-control">
+
             <label for="data">Data: </label>
                 <input type="date" name="data" class="form-control" required>
+
+            <label for="data">Data de encerramento<small> (não obrigatório)</small>: </label>
+                <input type="date" name="data_termino" class="form-control">
+
+            <label for="horario">Horário de inicio: </label>
+                <input type="time" name="horario" class="form-control" required>
+
+            <label for="horario_termino">Horário de encerramento<small> (não obrigatório)</small>:</label>
+                <input type="time" name="horario_termino" class="form-control">
+                
             <button class="btn btn-success mt-4" type="submit">Cadastrar</button>
         </form>
     </div>

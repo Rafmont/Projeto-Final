@@ -12,7 +12,7 @@ const Evento = new Schema({
     },
     horario: {
         type: String,
-        required: true
+        required: true 
     },
     horario_termino: {
         type: String,
@@ -21,6 +21,12 @@ const Evento = new Schema({
     data: {
         type: Date,
         required: true
+    },
+    data_termino: {
+        type: Date,
+    },
+    data_termino_fc: {
+        type: Date,
     },
     acontecer: {
         type: Boolean,

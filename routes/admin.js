@@ -19,6 +19,7 @@ require("../models/Especialidade")
 const Especialidade = mongoose.model("especialidades")
 const {verifica_gerente} = require("../helpers/verifica_gerente")
 const {verifica_atendente} = require("../helpers/verifica_atendente")
+const {verifica_login} = require("../helpers/verifica_login")
 require("../models/ContaAcesso")
 const ContaAcesso = mongoose.model("contasacesso")
 require("../models/Fatura")
@@ -43,12 +44,28 @@ router.post('/cadastro-evento', verifica_gerente, (req,res) => {
         res.render("eventos/cadastro-evento", {erros: erros})
     } else {
         var novaData = moment(req.body.data, "YYYY-MM-DD")
+
+        if(req.body.data_termino) {
+            var novaData_termino = moment(req.body.data_termino, "YYYY-MM-DD")
+            var data_termino_fc = moment(req.body.data_termino, "YYYY-MM-DD").add(1, 'days')
+        }else {
+            var novaData_termino = null
+        }
+
+        if(req.body.horario_termino) {
+            var horario_termino = req.body.horario_termino
+        } else {
+            var horario_termino = null
+        }
+        
         const novoEvento = new Evento({
             titulo: req.body.titulo,
             descricao: req.body.descricao,
             horario: req.body.horario,
-            horario_termino: req.body.horario_termino,
-            data: novaData
+            horario_termino: horario_termino,
+            data: novaData,
+            data_termino: novaData_termino,
+            data_termino_fc: data_termino_fc,
         })
         novoEvento.save().then(() => {
             req.flash("success_msg", "Evento criado com sucesso!")
@@ -72,10 +89,26 @@ router.get("/alterar-evento/:id", verifica_gerente, (req, res) => {
 router.post("/alterar-evento", verifica_gerente, (req, res) => {
     Evento.findOne({_id: req.body.id}).then((evento) => {
         var novaData = moment(req.body.data, "YYYY-MM-DD")
+        if(req.body.data_termino) {
+            var novaData_termino = moment(req.body.data_termino, "YYYY-MM-DD")
+            var data_termino_fc = moment(req.body.data_termino, "YYYY-MM-DD").add(1, 'days')
+        }else {
+            var novaData_termino = null
+            var data_termino_fc = null
+        }
+
+        if(req.body.horario_termino) {
+            var horario_termino = req.body.horario_termino
+        } else {
+            var horario_termino = null
+        }
         evento.titulo = req.body.titulo
         evento.descricao = req.body.descricao
         evento.horario = req.body.horario
+        evento.horario_termino = horario_termino
         evento.data = novaData
+        evento.data_termino = novaData_termino
+        evento.data_termino_fc = data_termino_fc
         evento.save().then(() => {
             req.flash("success_msg", "Evento alterado com sucesso!")
             res.redirect("/dashboard")
@@ -113,7 +146,7 @@ router.post("/desativar-evento", verifica_gerente, (req, res) => {
     })
 })
 
-router.get("/ver-evento/:id", verifica_atendente, (req, res) => {
+router.get("/ver-evento/:id", verifica_login, (req, res) => {
     Evento.findOne({_id: req.params.id}).then((evento) => {
         res.render("eventos/ver-evento", {evento: evento})
     }).catch((err) => {

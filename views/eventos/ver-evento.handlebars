@@ -2,12 +2,42 @@
     <div class="card-body">
         <h3>{{evento.titulo}}</h3>
         <hr>
-        <p style="text-align: justify">{{evento.descricao}}</p>
+        <p style="text-align: justify">Descrição: {{evento.descricao}}</p>
         <br>
+        <table class="table" style="text-align: center">
+            {{#if evento.data_termino}}
+            <tr>
+                <th>Data de início</th>
+                <td>{{dateFormat evento.data}} às {{evento.horario}}.</td>
+            </tr>
+            <tr>
+                <th>Data de término: </th>
+                {{#if evento.horario_termino}}
+                <td>{{dateFormat evento.data_termino}} às {{evento.horario_termino}}</td>
+                {{else}}
+                <td>{{dateFormat evento.data_termino}}</td>
+                {{/if}}
+            </tr>
+            {{else}}
+            <tr>
+                {{#if evento.horario_termino}}
+                <th>Data de início</th>
+                <td>{{dateFormat evento.data}} de {{evento.horario}} até {{evento.horario_termino}}.</td>
+                {{else}}
+                <th>Data de início</th>
+                <td>{{dateFormat evento.data}} às {{evento.horario}}</td>
+                {{/if}}
+            </tr>
+            {{/if}}
+        </table>
+
+
         <div style="text-align: center;">
+            {{#ifcond user.nivel_usuario '>=' 2}}
             <a href="/admin/alterar-evento/{{evento._id}}"><button class="btn btn-success">Editar</button></a>
             &nbsp;&nbsp;&nbsp;
             <a href="/admin/desativar-evento/{{evento._id}}"><button class="btn btn-danger">Desativar</button></a>
+            {{/ifcond}}
         </div>
     </div>
 </div>

@@ -25,17 +25,23 @@
           {{#ifcond acontecer '==' true}}
             {{#has_passed data}}
               {
+                {{#if data_termino}}
+                allDay: true,
+                {{/if}}
                 title: '{{titulo}}',
                 start: '{{dateFormatiso data}}T{{horario}}',
-                end: '{{dateFormatiso data}}T{{horario_termino}}',
+                end: '{{#if data_termino}}{{dateFormatiso data_termino_fc}}T{{#if horario_termino}}{{horario_termino}}{{else}}00:00:00{{/if}}{{else}}{{dateFormatiso data}}T{{#if horario_termino}}{{horario_termino}}{{else}}00:00:00{{/if}}{{/if}}',
                 color: '#5cb85c',
                 id: '{{_id}}'
               }, 
             {{else}}
               { 
+                {{#if data_termino}}
+                allDay: true,
+                {{/if}}
                 title: '{{titulo}}',
                 start: '{{dateFormatiso data}}T{{horario}}',
-                end: '{{dateFormatiso data}}T{{horario_termino}}',
+                end: '{{#if data_termino}}{{dateFormatiso data_termino_fc}}T{{#if horario_termino}}{{horario_termino}}{{else}}00:00:00{{/if}}{{else}}{{dateFormatiso data}}T{{#if horario_termino}}{{horario_termino}}{{else}}00:00:00{{/if}}{{/if}}',
                 color: '#bcbcbc',
                 id: '{{_id}}'
               }, 

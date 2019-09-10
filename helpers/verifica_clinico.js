@@ -3,7 +3,7 @@ module.exports = {
         if(req.isAuthenticated() && req.user.nivel_usuario >= 1) {
             return next();
         }
-        req.flash("error_msg", "Você deve ser ao menos um clinico para acessar esta página.")
+        req.flash("error_msg", "Você deve ser ao menos um terapêuta para acessar esta página.")
         res.redirect("/dashboard")
     }
 }

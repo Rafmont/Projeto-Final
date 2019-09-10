@@ -5,12 +5,22 @@
             <input name="id" type="text" value="{{evento._id}}" hidden>
             <label for="titulo">Título: </label>
                 <input type="text" name="titulo" class="form-control" value="{{evento.titulo}}" required>
+
             <label for="descricao">Descrição: </label>
                 <textarea name="descricao" class="form-control">{{evento.descricao}}</textarea>
-            <label for="horario">Horário: </label>
-                <input type="time" name="horario" value="{{evento.horario}}" class="form-control" required>
+
             <label for="data">Data: </label>
                 <input type="date" name="data" value="{{dateFormatiso evento.data}}" class="form-control" required>
+
+            <label for="data_termino">Data de encerramento: </label>
+                <input type="date" name="data_termino" value="{{dateFormatiso evento.data_termino}}" class="form-control">
+
+            <label for="horario">Horário: </label>
+                <input type="time" name="horario" value="{{evento.horario}}" class="form-control" required>
+
+            <label for="horario_termino">Horário termino<small> (não obrigatório)</small>: </label>
+                <input type="time" name="horario_termino" value="{{evento.horario_termino}}" class="form-control" >
+            
             <button class="btn btn-success mt-4" type="submit">Alterar</button>
         </form>
     </div>
