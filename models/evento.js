@@ -14,6 +14,10 @@ const Evento = new Schema({
         type: String,
         required: true
     },
+    horario_termino: {
+        type: String,
+        
+    },
     data: {
         type: Date,
         required: true

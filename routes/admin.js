@@ -47,6 +47,7 @@ router.post('/cadastro-evento', verifica_gerente, (req,res) => {
             titulo: req.body.titulo,
             descricao: req.body.descricao,
             horario: req.body.horario,
+            horario_termino: req.body.horario_termino,
             data: novaData
         })
         novoEvento.save().then(() => {
