@@ -1,38 +1,60 @@
-{{#if especialidades}}
-    <h3>Especialidades:</h3>
-<div class="card">
-<div class="card-body">
-    {{#ifcond user.nivel_usuario '>=' 2}}
-    <a href="/admin/cadastro-especialidade"><button class="btn btn-success">Cadastrar</button></a>
-    {{/ifcond}}
-    <hr>
-    <div class="container">
-        {{#grouped_each 3 especialidades}}
-            <div class="row">
-                {{#each this}}
-                    {{#if ativa}}
-                    <div class="col" style="padding: 2%;text-align:center;">
-                        <h5>{{nome}}</h5><br>
-                        <p style="text-align: justify;">{{descricao}}</p>
-                        <hr>
-                        <a href="/admin/alterar-especialidade/{{_id}}"><button class="btn btn-success">Alterar</button></a>
-                        <a href="/admin/desativar-especialidade/{{_id}}"><button class="btn btn-danger">Desativar</button></a>
-                    </div>
-                    {{/if}}
-                {{/each}}
-            </div>
-        {{/grouped_each}}
+<h3>Gerenciar especialidades</h3>
+<div class="card"> 
+    <div class="card-body">
+        <h5>Buscar:</h5>
+        <table class="table" style="text-align:center">
+            <tr>
+                <td>
+                    <input type="text" id="palavra" onkeyup="buscaNome()" placeholder="Digite o nome da especialidade..." class="form-control mt-2">
+                </td>
+                <td>
+                    <a href="/usuario/cadastro-especialidade"><img class="mt-2" src="/img/add.png"></a>
+                </td>
+            </tr>
+        </table>
+        {{#if especialidades}}
+        <table class="table" id="tabela" style="text-align:center">
+            <tr>
+                <th>Nome</th>
+                <th>Ver detalhes</th>
+                <th>Editar</th>
+                <th>Desativar</th>
+            </tr>
+            {{#each especialidades}}
+            <tr>
+                <td>{{nome}}</td>
+                <td><a href="/usuario/ver-especialidade/{{_id}}"><img src="/img/eye.png"></a></td>
+                <td><a href="/usuario/alterar-especialidade/{{_id}}"><img src="/img/black-ink-pen.png"></a></td>
+                <td><a href="/admin/desativar-especialidade/{{_id}}"><img src="/img/delete.png" width="22"></a></td>
+            </tr>
+            {{/each}}
+        </table>
+        {{else}}
+        <h4>Sem especialidades cadastrados!</h4>
+        {{/if}}
     </div>
 </div>
-</div>
-{{else}}
-<div class="card">
-<div class="card-body">
-    {{#ifcond user.nivel_usuario '>=' 2}}
-    <a href="/admin/cadastro-especialidade"><button class="btn btn-success">Cadastrar</button></a>
-    {{/ifcond}}
-    <hr>
-    <h4>Nenhuma especialidade cadastrada.</h4>
-</div>
-</div>
-{{/if}}
+
+<script>
+    function buscaNome() {
+        var entrada, filtro, tabela, tr, td, i, txtValue;
+
+        entrada = document.getElementById("palavra");
+        filtro = entrada.value.toUpperCase();
+        tabela = document.getElementById("tabela");
+        tr = tabela.getElementsByTagName("tr");
+
+
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[0];
+            if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filtro) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
+</script>

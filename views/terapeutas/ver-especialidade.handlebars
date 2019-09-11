@@ -1,0 +1,11 @@
+<h3>Ver especialidade: </h3>
+<div class="card">
+    <div class="card-body">
+        <form action="/admin/alterar-especialidade" method="POST">
+            <label for="nome">Nome: </label>
+                <input type="text" name="nome" value="{{especialidade.nome}}" class="form-control" disabled>
+            <label for="descricao">Descrição: </label>
+                <textarea name="descricao" class="form-control" disabled>{{especialidade.descricao}}</textarea>
+        </form>
+    </div>
+</div>

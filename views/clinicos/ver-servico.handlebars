@@ -1,0 +1,13 @@
+<h3>Ver serviço: </h3>
+<div class="card">
+    <div class="card-body">
+        <form action="/usuario/alterar-servico" method="post">
+            <label for="titulo">Nome: </label>
+                <input type="text" name="titulo" class="form-control" value="{{servico.nome}}" disabled >
+            <label for="descricao">Descrição: </label>
+                <textarea name="descricao" class="form-control"  disabled>{{servico.descricao}}</textarea>
+            <label for="valor">Valor: </label>
+                <input type="string" name="valor" value="{{servico.valor}}" class="form-control" disabled>
+        </form>
+    </div>
+</div>

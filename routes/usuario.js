@@ -269,8 +269,8 @@ router.get("/ver-funcionario/:id", verifica_atendente, (req, res) => {
     })
 })
 
-router.get("/servicos", (req, res) => {
-    Servico.find().sort({nome: "desc"}).then((servicos) => {
+router.get("/servicos", verifica_atendente, (req, res) => {
+    Servico.find({ativo: true}).sort({nome: 1}).then((servicos) => {
         res.render("clinicos/servicos", {servicos: servicos})
     }).catch((err) => {
         req.flash("error_msg", "Não foi possível buscar os serviços.")
@@ -351,6 +351,16 @@ router.post("/alterar-servico", verifica_atendente, (req, res) => {
         res.redirect("/usuario/servicos")
     })
 })  
+
+router.get("/ver-servico/:id", verifica_atendente, (req, res) => {
+    Servico.findOne({_id: req.params.id, ativo: true}).then((servico) => {
+        res.render("clinicos/ver-servico", {servico: servico})
+    }).catch((err) => {
+        req.flash("error_msg", "Erro ao encontrar serviço!")
+        res.redirect("/usuario/servicos")
+        console.log(err)
+    })
+})
 
 
 router.get("/cadastro-hospedes", verifica_atendente, (req, res) => {
@@ -1282,6 +1292,67 @@ router.get("/gerenciar-funcionarios", verifica_gerente, (req, res) => {
     }).catch((err) => {
         req.flash("error_msg", "Erro ao encontrar funcionários!")
         res.redirect("/dashboard")
+        console.log(err)
+    })
+})
+
+
+router.get("/especialidades", verifica_atendente, (req, res) => {
+    Especialidade.find({ativa: true}).sort({nome: 1}).then((especialidades) => {
+        res.render("terapeutas/especialidades", {especialidades: especialidades})
+    }).catch((err) => {
+        req.flash("error_msg", "Erro ao encontrar Especialidades")
+        res.redirect("/dashboard")
+    })
+})
+
+router.get("/cadastro-especialidade", verifica_gerente, (req, res) => {
+    res.render("terapeutas/cadastro-especialidade")
+})
+
+router.post("/cadastro-especialidade", verifica_gerente, (req, res) => {
+    const novaEspecialidade = new Especialidade({
+        nome: req.body.nome,
+        descricao: req.body.descricao,
+    })
+    novaEspecialidade.save().then(() => {
+        req.flash("success_msg", "Especialidade cadastrada")
+        res.redirect("/usuario/especialidades")
+    }).catch((err) => {
+        req.flash("error_msg", "Erro ao cadastrar especialidade")
+        res.redirect("/dashboard")
+    })
+})
+
+router.get("/alterar-especialidade/:id", verifica_gerente, (req, res) => {
+    Especialidade.findOne({_id: req.params.id}).then((especialidade) => {
+        res.render("terapeutas/alterar-especialidade", {especialidade: especialidade})
+    }).catch((err) => {
+        req.flash("error_msg", "Erro ao encontrar especialidade")
+        res.redirect("/usuario/especialidades")
+    })
+})
+
+router.post("/alterar-especialidade", verifica_gerente, (req, res) => {
+    Especialidade.findOne({_id: req.body.id_especialidade}).then((especialidade) => {
+        especialidade.nome = req.body.nome,
+        especialidade.descricao = req.body.descricao,
+        especialidade.save().then(() => {
+            req.flash("success_msg", "Especialidade alterada com sucesso!")
+            res.redirect("/usuario/especialidades")
+        }).catch((err) => {
+            req.flash("error_msg", "Erro ao salvar a especialidade")
+            res.redirect("/usuario/especialidades")
+        })
+    })
+})
+
+router.get("/ver-especialidade/:id", verifica_atendente, (req, res) => {
+    Especialidade.findOne({_id: req.params.id}).then((especialidade) => {
+        res.render("terapeutas/ver-especialidade", {especialidade: especialidade})
+    }).catch((err) => {
+        req.flash("error_msg", "Erro ao encontar especialidade!")
+        res.redirect("/usuario/especialidades")
         console.log(err)
     })
 })

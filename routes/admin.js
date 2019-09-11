@@ -155,55 +155,6 @@ router.get("/ver-evento/:id", verifica_login, (req, res) => {
     })
 })
 
-router.get("/especialidades", verifica_atendente, (req, res) => {
-    Especialidade.find().then((especialidades) => {
-        res.render("terapeutas/especialidades", {especialidades: especialidades})
-    }).catch((err) => {
-        req.flash("error_msg", "Erro ao encontrar Especialidades")
-        res.redirect("/dashboard")
-    })
-})
-
-router.get("/cadastro-especialidade", verifica_gerente, (req, res) => {
-    res.render("terapeutas/cadastro-especialidade")
-})
-
-router.post("/cadastro-especialidade", verifica_gerente, (req, res) => {
-    const novaEspecialidade = new Especialidade({
-        nome: req.body.nome,
-        descricao: req.body.descricao,
-    })
-    novaEspecialidade.save().then(() => {
-        req.flash("success_msg", "Especialidade cadastrada")
-        res.redirect("/admin/especialidades")
-    }).catch((err) => {
-        req.flash("error_msg", "Erro ao cadastrar especialidade")
-        res.redirect("/dashboard")
-    })
-})
-
-router.get("/alterar-especialidade/:id", verifica_gerente, (req, res) => {
-    Especialidade.findOne({_id: req.params.id}).then((especialidade) => {
-        res.render("terapeutas/alterar-especialidade", {especialidade: especialidade})
-    }).catch((err) => {
-        req.flash("error_msg", "Erro ao encontrar especialidade")
-        res.redirect("/admin/especialidades")
-    })
-})
-
-router.post("/alterar-especialidade", verifica_gerente, (req, res) => {
-    Especialidade.findOne({_id: req.body.id_especialidade}).then((especialidade) => {
-        especialidade.nome = req.body.nome,
-        especialidade.descricao = req.body.descricao,
-        especialidade.save().then(() => {
-            req.flash("success_msg", "Especialidade alterada com sucesso!")
-            res.redirect("/admin/especialidades")
-        }).catch((err) => {
-            req.flash("error_msg", "Erro ao salvar a especialidade")
-            res.redirect("/admin/especialidades")
-        })
-    })
-})
 
 router.get("/desativar-especialidade/:id", verifica_gerente, (req, res) => {
     Especialidade.findOne({_id: req.params.id}).then((especialidade) => {

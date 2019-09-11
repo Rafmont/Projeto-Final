@@ -1,26 +1,62 @@
-<h3>Serviços:</h3>
-<div class="card">
+<h3>Gerenciar serviços</h3>
+<div class="card"> 
     <div class="card-body">
-        {{#ifcond user.nivel_usuario '!=' 1}}
-        <a href="/usuario/cadastro-servico"><button class="btn btn-success">Cadastrar</button></a>
-        <hr>
-        {{/ifcond}}
+        <h5>Buscar:</h5>
+        <table class="table" style="text-align:center">
+            <tr>
+                <td>
+                    <input type="text" id="palavra" onkeyup="buscaNome()" placeholder="Digite o nome do serviços..." class="form-control mt-2">
+                </td>
+                <td>
+                    <a href="/usuario/cadastro-servico"><img class="mt-2" src="/img/add.png"></a>
+                </td>
+            </tr>
+        </table>
         {{#if servicos}}
-        {{#each servicos}}
-            {{#ifcond ativo "==" true}}
-                <div class="card mt-3">
-                    <div class="card-body">
-                        <h4>{{nome}}</h4>
-                        <hr>
-                        <p style="text-align:justify">{{descricao}}</p>
-                        <p>R$ {{valor}}</p>
-                        <a href="/usuario/alterar-servico/{{_id}}"<button class="btn btn-success mt-2">Alterar</button></a>
-                    </div>
-                </div>
-            {{/ifcond}}
-        {{/each}}
+        <table class="table" id="tabela" style="text-align:center">
+            <tr>
+                <th>Nome</th>
+                <th>Valor (R$)</th>
+                <th>Ver detalhes</th>
+                <th>Editar</th>
+                <th>Desativar</th>
+            </tr>
+            {{#each servicos}}
+            <tr>
+                <td>{{nome}}</td>
+                <td>{{valor}}</td>
+                <td><a href="/usuario/ver-servico/{{_id}}"><img src="/img/eye.png"></a></td>
+                <td><a href="/usuario/alterar-servico/{{_id}}"><img src="/img/black-ink-pen.png"></a></td>
+                <td><a href="/usuario/desativar-servico/{{_id}}"><img src="/img/delete.png" width="22"></a></td>
+            </tr>
+            {{/each}}
+        </table>
         {{else}}
-            <p>Sem tecnicas cadastradas.</p>
+        <h4>Sem serviços cadastrados!</h4>
         {{/if}}
     </div>
 </div>
+
+<script>
+    function buscaNome() {
+        var entrada, filtro, tabela, tr, td, i, txtValue;
+
+        entrada = document.getElementById("palavra");
+        filtro = entrada.value.toUpperCase();
+        tabela = document.getElementById("tabela");
+        tr = tabela.getElementsByTagName("tr");
+
+
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[0];
+            if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filtro) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
+</script>
