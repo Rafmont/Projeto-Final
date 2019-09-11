@@ -1,0 +1,72 @@
+<h3>Gerenciar funcionários</h3>
+<div class="card"> 
+    <div class="card-body">
+        <h5>Buscar:</h5>
+        <table class="table" style="text-align:center">
+            <tr>
+                <td>
+                    <input type="text" id="palavra" onkeyup="buscaNome()" placeholder="Digite o nome do funcionário..." class="form-control mt-2">
+                </td>
+                <td>
+                    <a href="/usuario/cadastro-funcionario"><img class="mt-2" src="/img/add-user.png"></a>
+                </td>
+            </tr>
+        </table>
+        {{#if funcionarios}}
+        <table class="table" id="tabela" style="text-align:center">
+            <tr>
+                <th>Nome</th>
+                <th>Função</th>
+                <th>Ver detalhes</th>
+                <th>Editar</th>
+                <th>Desativar</th>
+            </tr>
+            {{#each funcionarios}}
+            <tr>
+                <td>{{nome}}</td>
+                <td>
+                    {{#ifcond nivel_usuario '==' 0}}
+                        Atendente
+                    {{/ifcond}}
+                    {{#ifcond nivel_usuario '==' 2}}
+                        Gerente
+                    {{/ifcond}}
+                    {{#ifcond nivel_usuario '==' 3}}
+                        Administrador
+                    {{/ifcond}}
+                </td>
+                <td><a href="/usuario/ver-funcionario/{{_id}}"><img src="/img/eye.png"></a></td>
+                <td><a href="/usuario/editar-funcionario/{{_id}}"><img src="/img/black-ink-pen.png"></a></td>
+                <td><a href="/admin/desativar-funcionario/{{_id}}"><img src="/img/delete.png" width="22"></a></td>
+            </tr>
+            {{/each}}
+        </table>
+        {{else}}
+        <h4>Sem funcionários cadastrados!</h4>
+        {{/if}}
+    </div>
+</div>
+
+<script>
+    function buscaNome() {
+        var entrada, filtro, tabela, tr, td, i, txtValue;
+
+        entrada = document.getElementById("palavra");
+        filtro = entrada.value.toUpperCase();
+        tabela = document.getElementById("tabela");
+        tr = tabela.getElementsByTagName("tr");
+
+
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[0];
+            if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filtro) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
+</script>

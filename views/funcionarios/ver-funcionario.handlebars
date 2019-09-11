@@ -1,0 +1,30 @@
+<h3>Ver funcionario: </h3>
+<div class="card">
+    <div class="card-body">
+        <form action="/usuario/alterar-funcionario" method="POST">
+            <label for="nome">Nome: </label>
+                <input type="text" name="nome" class="form-control" value="{{funcionario.nome}}" disabled>
+            <label for="data_nascimento">Data de nascimento: </label>
+                <input type="date" name="data_nascimento" value="{{dateFormatiso funcionario.data_nascimento}}" class="form-control" disabled>
+            <label for="rg">RG: </label>
+                <input type="text" name="rg" value="{{funcionario.rg}}" class="form-control" disabled>
+            <label for="cpf">CPF: </label>
+                <input type="text" name="cpf" value="{{funcionario.cpf}}" class="form-control" disabled>
+            <label for="telefone_1">Telefone: </label>
+                <input type="text" name="telefone_1" value="{{funcionario.telefone_1}}" class="form-control" disabled>
+            <label for="telefone_2">Telefone 2: </label>
+                <input type="text" name="telefone_2" value="{{funcionario.telefone_2}}" class="form-control" disabled>
+            <label for="email">Email: </label>
+                <input type="email" name="email" value="{{funcionario.email}}" class="form-control" disabled>
+            <label for="nivel_usuario">Função: </label>
+                <select name="nivel_usuario" class="custom-select" disabled>
+                    {{#select funcionario.nivel_usuario}}
+                    <option value="0">Atendente</option>
+                    <option value="1">Clínico</option>
+                    <option value="2">Gerente</option>
+                    <option value="3">Administrador</option>
+                    {{/select}}
+                </select>
+        </form>
+    </div>
+</div>

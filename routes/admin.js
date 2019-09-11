@@ -367,5 +367,44 @@ router.post("/desativar-terapeuta", verifica_gerente, (req, res) => {
 })
 
 
+//rotas para desativar o funcionário:
+router.get("/desativar-funcionario/:id",verifica_gerente, (req, res) => {
+    Usuario.findOne({_id: req.params.id}).then((funcionario) => {
+        if(funcionario) {
+            res.render("funcionarios/desativar-funcionario", {funcionario: funcionario})
+        }else {
+            req.flash("error_msg", "Não encontramos um funcionario com este CPF.")
+            res.redirect("alterar-funcionario")
+        }
+    }).catch((err) => {
+        req.flash("error_msg", "Houve um erro ao encontrar o funcionario.")
+        console.log(err)
+    })
+})
+
+router.post("/desativar-funcionario", verifica_gerente, (req, res) => {
+    Usuario.findOne({_id: req.body.id}).then((funcionario) => {
+        funcionario.ativo = false
+        funcionario.save().then(() => {
+            ContaAcesso.deleteOne({usuario: req.body.id}).then(() => {
+                req.flash("success_msg", "Funcionário desativado com sucesso!")
+                res.redirect("/usuario/gerenciar-funcionarios")
+            }).catch((err) => {
+                req.flash("error_msg", "Erro ao desativar conta de acesso!")
+                res.redirect("/usuario/gerenciar-funcionarios")
+                console.log(err)
+            })
+        }).catch((err) => {
+            req.flash("error_msg", "Erro ao desativar funcionário!")
+            res.redirect("/usuario/gerenciar-funcionarios")
+            console.log(err)
+        })
+    }).catch((err) => {
+        req.flash("error_msg", "Erro ao encontrar funcionário!")
+        res.redirect("/usuario/gerenciar-funcionarios")
+        console.log(err)
+    })
+})
+
 
 module.exports = router

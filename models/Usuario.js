@@ -38,6 +38,10 @@ const Usuario = new Schema({
         3: Administrador
         */
     },
+    ativo: {
+        type: Boolean,
+        default: true
+    },
 })
 
 mongoose.model("usuarios", Usuario)

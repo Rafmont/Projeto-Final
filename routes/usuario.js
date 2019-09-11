@@ -178,12 +178,8 @@ router.post('/alterar-senha', (req, res) => {
     }
 })
 
-router.get("/alterar-funcionario",verifica_gerente, (req, res) => {
-    res.render("funcionarios/alterar-funcionario")
-})
-
-router.post("/busca-alterar-funcionario",verifica_gerente, (req, res) => {
-    Usuario.findOne({cpf: req.body.busca_cpf}).then((usuario) => {
+router.get("/editar-funcionario/:id", verifica_gerente, (req, res) => {
+    Usuario.findOne({_id: req.params.id}).then((usuario) => {
         if(usuario) {
             res.render("funcionarios/alterar-funcionario", {usuario: usuario})
         }else {
@@ -263,48 +259,14 @@ router.post("/alterar-funcionario", verifica_gerente, (req, res) => {
     }
 })
 
-router.get("/desativar-funcionario",verifica_gerente, (req, res) => {
-    res.render("funcionarios/desativar-funcionario")
-})
-
-router.post("/busca-desativar-usuario",verifica_gerente, (req, res) => {
-    Usuario.findOne({cpf: req.body.busca_cpf}).then((usuario) => {
-        if(usuario) {
-            res.render("funcionarios/desativar-funcionario", {usuario: usuario})
-        }else {
-            req.flash("error_msg", "Não encontramos um funcionario com este CPF.")
-            res.redirect("alterar-funcionario")
-        }
+router.get("/ver-funcionario/:id", verifica_atendente, (req, res) => {
+    Usuario.findOne({_id: req.params.id}).then((funcionario) => {
+        res.render("funcionarios/ver-funcionario", {funcionario: funcionario})
     }).catch((err) => {
-        res.flash("error_msg", "Houve um erro ao encontrar o funcionario.")
+        req.flash("error_msg", "Erro ao encontrar funcionário!")
+        res.redirect("/usuario/gerenciar-funcionarios")
+        console.log(err)
     })
-})
-
-router.post("/desativar-usuario",verifica_gerente, (req, res) => {
-    const desativarUsuario = new Usuario_Desativado({
-        nome: req.body.nome,
-        data_nascimento: req.body.data_nascimento,
-        rg: req.body.rg,
-        cpf: req.body.cpf,
-        telefone_1: req.body.telefone_1,
-        telefone_2: req.body.telefone_2,
-        email: req.body.email,
-        nivel_usuario: req.body.nivel_usuario,
-    })
-    desativarUsuario.save().then(() => {
-        Usuario.deleteOne({cpf: req.body.cpf}).then(() => {
-            req.flash("success_msg", "Usuário deletado com sucesso!")
-            res.redirect("/dashboard")
-        }).catch((err) => {
-            req.flash("error_msg", "Erro ao desativar usuário.")
-            res.redirect("/desativar-usuario")  
-            console.log(err + "No primeiro DELETE")
-        })
-    }).catch((err) => {
-        req.flash("error_msg", "Erro ao desativar usuário.")
-        res.redirect("/desativar-usuario")
-        console.log(err + "No SAVE")
-    })   
 })
 
 router.get("/servicos", (req, res) => {
@@ -1311,6 +1273,17 @@ router.post("/alterar-terapeuta", verifica_gerente, (req, res) => {
             res.redirect("/dashboard")
         })
     }
+})
+
+//Rotas para gerenciamento de funcionários.
+router.get("/gerenciar-funcionarios", verifica_gerente, (req, res) => {
+    Usuario.find({ativo: true}).sort({nome: 1}).then((funcionarios) => {
+        res.render("funcionarios/gerenciar-funcionarios", {funcionarios: funcionarios})
+    }).catch((err) => {
+        req.flash("error_msg", "Erro ao encontrar funcionários!")
+        res.redirect("/dashboard")
+        console.log(err)
+    })
 })
 
 module.exports = router
