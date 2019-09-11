@@ -1,7 +1,7 @@
-<h3>Desativar terapêuta: </h3>
+<h3>Ver terapêuta: </h3>
 <div class="card">
     <div class="card-body">
-        <form action="/admin/desativar-terapeuta" method="POST">
+        <form action="/admin/alterar-terapeuta" method="POST">
                 <input type="text" name="_id" hidden value="{{terapeuta._id}}">
             <label for="nome">Nome: </label>
                 <input type="text" name="nome" class="form-control" value="{{terapeuta.nome}}" disabled>
@@ -11,6 +11,10 @@
                 <input type="text" name="rg" class="form-control" value="{{terapeuta.rg}}" disabled>
             <label for="cpf">CPF: </label>
                 <input type="text" name="cpf" class="form-control" value="{{terapeuta.cpf}}" disabled>
+            <label for="telefone_1">Telefone: </label>
+                <input type="text" name="telefone_1" class="form-control" value="{{terapeuta.telefone_1}}" disabled>
+            <label for="telefone_2">Telefone 2: </label>
+                <input type="text" name="telefone_2" value="{{terapeuta.telefone_2}}" class="form-control" disabled>
             <label for="email">Email: </label>
                 <input type="email" name="email" value="{{terapeuta.email}}" class="form-control" disabled>
             <label for="especialidade">Especialidade: </label>
@@ -23,7 +27,6 @@
                     <option value="2">Mensal</option>
                     {{/select}}
                 </select>
-            <button class="btn btn-danger mt-4" type="submit">Desativar</button>
         </form>
     </div>
 </div>

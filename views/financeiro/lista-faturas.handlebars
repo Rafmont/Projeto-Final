@@ -1,9 +1,12 @@
 
 <h3>Faturas em aberto:</h3>
 <div class="card">
-    
     <div class="card-body">
-        <table class="table">
+        <h5>Buscar:</h5>
+        <input type="text" id="palavra" onkeyup="buscaNome()" placeholder="Digite o nome do hóspede..." class="form-control">
+        <br>
+
+        <table class="table" id="tabela">
             <tr style="text-align: center;">
                 <th>Nome</th>
                 <th>Valor total (R$)</th>
@@ -17,5 +20,30 @@
             </tr>
             {{/each}}    
         </table>
+
     </div>
 </div>
+
+<script>
+    function buscaNome() {
+        var entrada, filtro, tabela, tr, td, i, txtValue;
+
+        entrada = document.getElementById("palavra");
+        filtro = entrada.value.toUpperCase();
+        tabela = document.getElementById("tabela");
+        tr = tabela.getElementsByTagName("tr");
+
+
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[0];
+            if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filtro) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
+</script>

@@ -55,9 +55,9 @@ Adiconar produtos a fatura. ()
 
 
 
-cores da agenda, lotação.
+cores da agenda, lotação. (X)
 
-disponibilidade dos horários.
+disponibilidade dos horários.(X)
 
 implementar dois ou mais serviços numa consulta
 
@@ -68,3 +68,7 @@ Tempo do serviço.
 limites de horarios.
 
 pensar - benefícios de hospedagem.
+
+
+Comando nodemon: 
+set PATH=%PATH%;C:\Users\"Aqui seu usuario"\AppData\Roaming\npm;

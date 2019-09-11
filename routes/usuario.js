@@ -40,6 +40,8 @@ require("../models/Fatura-Consulta")
 const FaturaConsulta = mongoose.model("faturasconsultas")
 require("../models/FaturaProduto")
 const FaturaProduto = mongoose.model("faturaprodutos")
+require("../models/Especialidade")
+const Especialidade = mongoose.model("especialidades")
 
 router.get('/cadastro-funcionario',  (req, res) => {
     res.render("funcionarios/cadastro-funcionario")
@@ -1196,5 +1198,119 @@ router.get("/ver-atendimento/:id", verifica_clinico, (req, res) => {
     })
 })
 
+//Rotas para renderizar a lista de terapêutas e gerenciá-los
+router.get("/gerenciar-terapeuta", verifica_clinico, (req, res) => {
+    Terapeuta.find().sort({nome: 1}).populate("especialidade").then((terapeutas) => {
+        res.render("terapeutas/gerenciar-terapeutas", {terapeutas: terapeutas})
+    }).catch((err) => {
+        req.flash("error_msg", "Erro ao encontrar terapêutas!")
+        res.redirect("/dashboard")
+        console.log(err)
+    })
+})
+
+
+//Rotas para manipular terapeutas.
+router.get("/ver-terapeuta/:id", verifica_gerente, (req, res) => {
+    Terapeuta.findOne({_id: req.params.id}).populate("especialidade").then((terapeuta) => {
+        res.render("terapeutas/ver-terapeuta", {terapeuta: terapeuta})
+    }).catch((err) => {
+        req.flash("error_msg", "Erro ao encontrar terapeuta!")
+        res.redirect("/usuario/gerenciar-terapeuta")
+        console.log(err)
+    })
+})
+
+router.get("/editar-terapeuta/:id", verifica_gerente, (req, res) => {
+    Terapeuta.findOne({_id: req.params.id}).populate("especialidade").then((terapeuta) => {
+        if(terapeuta) {
+            Terapeuta.find().then((terapeutas) => {
+                Especialidade.find().then((especialidades) => {
+                    res.render("terapeutas/alterar-terapeuta", {terapeuta: terapeuta, terapeutas: terapeutas, especialidades: especialidades})
+                }).catch((err) => {
+                    req.flash("error_msg", "Erro ao encontrar especialidade")
+                    res.redirect("/dashboard")
+                })
+            }).catch((err) => {
+                req.flash("error_msg", "Erro ao encontrar terapêuta!")
+                res.redirect("/dashboard")
+                console.log(err)
+            })
+        } else {
+            res.flash("error_msg", "Erro ao encontrar terapêuta")
+        }   
+    }).catch((err) => {
+        req.flash("error_msg", "Erro ao encontrar terapeuta!")
+        res.redirect("/dashboard")
+    })
+})
+
+router.post("/alterar-terapeuta", verifica_gerente, (req, res) => {
+    var erros = []
+
+    if(!req.body.nome || typeof req.body.nome == undefined || req.body.nome == null) {
+        erros.push({texto: "Nome inválido."})
+    }
+
+    if(!req.body.data_nascimento || typeof req.body.data_nascimento == undefined || req.body.data_nascimento == null) {
+        erros.push({texto: "Data de nascimento inválida."})
+    }
+
+    if(!req.body.rg || typeof req.body.rg == undefined || req.body.rg == null) {
+        erros.push({texto: "RG inválido"})
+    }
+
+    if(!req.body.cpf || typeof req.body.cpf == undefined || req.body.cpf == null) {
+        erros.push({texto: "CPF inválido"})
+    }
+
+    if(!req.body.cpf || typeof req.body.cpf == undefined || req.body.cpf == null) {
+        erros.push({texto: "CPF inválido"})
+    }
+
+    if(!req.body.telefone_1 || typeof req.body.telefone_1 == undefined || req.body.telefone_1 == null) {
+        erros.push({texto: "Telefone 1 inválido"})
+    }
+
+    if(!req.body.email || typeof req.body.email == undefined || req.body.email == null) {
+        erros.push({texto: "Telefone 1 inválido"})
+    }
+
+    if(erros.length > 0) {
+        res.render("admin/cadastro-terapeuta", {erros: erros})
+    }else {
+        Terapeuta.findOne({_id: req.body._id, ativo: true}).then((terapeuta) => {
+            if (req.body.telefone_2) {
+                tel2 = req.body.telefone_2
+            } else {
+                tel2 = 0
+            }
+
+            var novaData = moment(req.body.data_nascimento, "YYYY-MM-DD")
+
+            terapeuta.nome = req.body.nome
+            terapeuta.data_nascimento = novaData
+            terapeuta.rg = req.body.rg
+            terapeuta.cpf = req.body.cpf
+            terapeuta.telefone_1 = req.body.telefone_1
+            terapeuta.telefone_2 = tel2
+            terapeuta.email = req.body.email
+            terapeuta.especialidade = req.body.especialidade
+            terapeuta.acerto = req.body.acerto
+
+            terapeuta.save().then(() => {
+                req.flash("success_msg", "Dados alterados com sucesso!")
+                res.redirect("/dashboard")
+            }).catch((err) => { 
+                req.flash("error_msg", "Erro ao salvar dados alterados!")
+                res.redirect("/dashboard")
+            })
+
+        }).catch((err) => {
+            req.flash("error_msg", "Erro ao encontrar terapêta")
+            res.redirect("/dashboard")
+        })
+    }
+})
 
 module.exports = router

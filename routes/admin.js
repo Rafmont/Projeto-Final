@@ -232,7 +232,7 @@ router.post("/desativar-especialidade", verifica_gerente, (req, res) => {
 })
 
 router.get("/cadastro-terapeuta", verifica_gerente, (req, res) => {
-    Especialidade.find().then((especialidades) => {
+    Especialidade.find().then((especialidades) => { 
         res.render("terapeutas/cadastro-terapeuta", {especialidades: especialidades})
     }).catch((err) => {
         req.flash("error_msg", "Erro ao encontrar especialidades para o cadastro.")
@@ -334,128 +334,10 @@ router.post("/cadastro-terapeuta", verifica_gerente, (req, res) => {
     }
 })
 
-router.get("/alterar-terapeuta", verifica_gerente, (req, res) => {
-    Terapeuta.find().then((terapeutas) => {
-        Especialidade.find().then((especialidades) => {
-            res.render("terapeutas/alterar-terapeuta", {terapeutas: terapeutas, especialidades: especialidades})
-        }).catch((err) => {
-            req.flash("error_msg", "Erro ao encontrar especialidade")
-            res.redirect("/dashboard")
-        })
-    }).catch((err) => {
-        req.flash("error_msg", "Falha ao encontrar os terapêutas")
-        res.redirect("/dashboard")
-    })
-})
-
-router.post("/busca-alterar-terapeuta", verifica_gerente, (req, res) => {
-    Terapeuta.findOne({cpf: req.body.busca_cpf}).populate("especialidade").then((terapeuta) => {
+router.get("/desativar-terapeuta/:id", verifica_gerente, (req, res) => {
+    Terapeuta.findOne({_id: req.params.id, ativo: true}).populate("especialidade").then((terapeuta) => {
         if(terapeuta) {
-            Terapeuta.find().then((terapeutas) => {
-                Especialidade.find().then((especialidades) => {
-                    res.render("terapeutas/alterar-terapeuta", {terapeuta: terapeuta, terapeutas: terapeutas, especialidades: especialidades})
-                }).catch((err) => {
-                    req.flash("error_msg", "Erro ao encontrar especialidade")
-                    res.redirect("/dashboard")
-                })
-            })
-        } else {
-            res.flash("error_msg", "Erro ao encontrar terapêuta")
-        }   
-    }).catch((err) => {
-        req.flash("error_msg", "Erro ao encontrar terapeuta!")
-        res.redirect("/dashboard")
-    })
-})
-
-router.post("/alterar-terapeuta", verifica_gerente, (req, res) => {
-    var erros = []
-
-    if(!req.body.nome || typeof req.body.nome == undefined || req.body.nome == null) {
-        erros.push({texto: "Nome inválido."})
-    }
-
-    if(!req.body.data_nascimento || typeof req.body.data_nascimento == undefined || req.body.data_nascimento == null) {
-        erros.push({texto: "Data de nascimento inválida."})
-    }
-
-    if(!req.body.rg || typeof req.body.rg == undefined || req.body.rg == null) {
-        erros.push({texto: "RG inválido"})
-    }
-
-    if(!req.body.cpf || typeof req.body.cpf == undefined || req.body.cpf == null) {
-        erros.push({texto: "CPF inválido"})
-    }
-
-    if(!req.body.cpf || typeof req.body.cpf == undefined || req.body.cpf == null) {
-        erros.push({texto: "CPF inválido"})
-    }
-
-    if(!req.body.telefone_1 || typeof req.body.telefone_1 == undefined || req.body.telefone_1 == null) {
-        erros.push({texto: "Telefone 1 inválido"})
-    }
-
-    if(!req.body.email || typeof req.body.email == undefined || req.body.email == null) {
-        erros.push({texto: "Telefone 1 inválido"})
-    }
-
-    if(erros.length > 0) {
-        res.render("admin/cadastro-terapeuta", {erros: erros})
-    }else {
-        Terapeuta.findOne({_id: req.body._id, ativo: true}).then((terapeuta) => {
-            if (req.body.telefone_2) {
-                tel2 = req.body.telefone_2
-            } else {
-                tel2 = 0
-            }
-
-            var novaData = moment(req.body.data_nascimento, "YYYY-MM-DD")
-
-            terapeuta.nome = req.body.nome
-            terapeuta.data_nascimento = novaData
-            terapeuta.rg = req.body.rg
-            terapeuta.cpf = req.body.cpf
-            terapeuta.telefone_1 = req.body.telefone_1
-            terapeuta.telefone_2 = tel2
-            terapeuta.email = req.body.email
-            terapeuta.especialidade = req.body.especialidade
-            terapeuta.acerto = req.body.acerto
-
-            terapeuta.save().then(() => {
-                req.flash("success_msg", "Dados alterados com sucesso!")
-                res.redirect("/dashboard")
-            }).catch((err) => { 
-                req.flash("error_msg", "Erro ao salvar dados alterados!")
-                res.redirect("/dashboard")
-            })
-
-        }).catch((err) => {
-            req.flash("error_msg", "Erro ao encontrar terapêta")
-            res.redirect("/dashboard")
-        })
-    }
-})
-
-router.get("/desativar-terapeuta", verifica_gerente, (req, res) => {
-    Terapeuta.find({ativo: true}).populate("especialidade").then((terapeutas) => {
-        if(terapeutas) {
-            res.render("terapeutas/desativar-terapeuta", {terapeutas: terapeutas})
-        } else {
-            req.flash("Nenhum terapêuta cadastrado!")   
-        }
-        
-    }).catch((err) => {
-        req.flash("error_msg", "Falha ao encontrar os terapêutas")
-        res.redirect("/dashboard")
-    })
-})
-
-router.post("/busca-desativar-terapeuta", verifica_gerente, (req, res) => {
-    Terapeuta.findOne({cpf: req.body.busca_cpf, ativo: true}).populate("especialidade").then((terapeuta) => {
-        if(terapeuta) {
-            Terapeuta.find().then((terapeutas) => {
-                res.render("terapeutas/desativar-terapeuta", {terapeuta: terapeuta, terapeutas: terapeutas})
-            })
+            res.render("terapeutas/desativar-terapeuta", {terapeuta: terapeuta})
         } else {
             req.flash("error_msg", "Erro ao encontrar terapêuta")
             res.redirect("/admin/desativar-terapeuta")

@@ -20,18 +20,13 @@
                 Terapêutas
             </a>
             <div class="dropdown-menu">
+                <a class="dropdown-item" href="/usuario/gerenciar-terapeuta">Gerenciar Terapêutas</a>
+                <hr>
                 <a class="dropdown-item" href="/usuario/servicos">Serviços</a>
+                <a class="dropdown-item" href="/admin/especialidades">Especialidades</a>
+                <hr>
                 <a class="dropdown-item" href="/usuario/agendar-atendimento">Agendar atendimento</a>
                 <a class="dropdown-item" href="/usuario/atendimentos-marcados">Atendimentos marcados</a>
-                
-                {{#ifcond user.nivel_usuario '>=' 2}}
-                <hr>
-                    <a class="dropdown-item" href="/admin/cadastro-terapeuta">Cadastro de terapêutas</a>
-                    <a class="dropdown-item" href="/admin/alterar-terapeuta">Alterar terapêutas</a>
-                    <a class="dropdown-item" href="/admin/desativar-terapeuta">Desativar de terapêutas</a>
-                    <hr>
-                    <a class="dropdown-item" href="/admin/especialidades">Especialidades</a>
-                {{/ifcond}}
             </div>
         </li>
         <li class="nav-item dropdown mx-3">
