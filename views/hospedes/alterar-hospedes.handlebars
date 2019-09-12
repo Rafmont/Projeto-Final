@@ -1,18 +1,6 @@
  <h3>Alterar hóspede: </h3>
 <div class="card">
     <div class="card-body">
-        <h5>Buscar hóspede:</h5>
-        <form action="/usuario/busca-alterar-hospedes" method="POST">
-            <label for="busca_cpf">CPF: </label>
-                <input type="text" name="busca_cpf" class="form-control">
-            <button type="submit" class="btn btn-success mt-3">Buscar</button>
-        </form>
-    </div>
-</div>
-<hr>
-{{#if hospede}}
-<div class="card">
-    <div class="card-body">
         <form action="/usuario/alterar-hospedes" method="POST">
                 <input type="text" name="cpf_antigo" hidden value="{{hospede.cpf}}">
             <label for="nome">Nome: </label>
@@ -35,10 +23,3 @@
         </form>
     </div>
 </div>
-{{else}}
-<div class="card">
-    <div class="card-body">
-        <p>Busque pelo CPF para editar um cadastro!</p>
-    </div>
-</div>
-{{/if}}

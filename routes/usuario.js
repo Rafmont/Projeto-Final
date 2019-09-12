@@ -84,7 +84,8 @@ router.post('/cadastro-funcionario',  (req, res) => {
         Usuario.findOne({rg: req.body.rg}).then((usuario) => {
             if(usuario) {
                 req.flash("error_msg", "Já existe um funcionário com este RG.")
-                res.redirect("/cadastro-funcionario")
+                res.redirect("/usuario/cadastro-funcionario")
+                console.log(err)
             } else {
                 if (req.body.telefone_2) {
                     tel2 = req.body.telefone_2
@@ -402,12 +403,18 @@ router.post("/cadastro-hospedes", verifica_atendente, (req, res) => {
     })
 })
 
-router.get("/alterar-hospedes", verifica_atendente, (req, res) => {
-    res.render("hospedes/alterar-hospedes")
+router.get("/ver-hospedes/:id", verifica_atendente, (req, res) => {
+    Hospede.findOne({_id: req.params.id}).then((hospede) => {
+        res.render("hospedes/ver-hospedes", {hospede: hospede})
+    }).catch((err) => {
+        req.flash("error_msg", "Erro ao encontrar hóspede!")
+        res.redirect("/usuario/gerenciar-hospedes")
+        console.log(err)
+    })
 })
 
-router.post("/busca-alterar-hospedes", verifica_atendente, (req, res) => {
-    Hospede.findOne({cpf: req.body.busca_cpf}).then((hospede) => {
+router.get("/alterar-hospedes/:id", verifica_atendente, (req, res) => {
+    Hospede.findOne({_id: req.params.id}).then((hospede) => {
         if(hospede && hospede.ativo == true){
             res.render("hospedes/alterar-hospedes", {hospede: hospede})
         }else {
@@ -457,12 +464,8 @@ router.post("/alterar-hospedes", verifica_atendente, (req, res) => {
     })
 })
 
-router.get("/desativar-hospedes", verifica_atendente, (req, res) => {
-    res.render("hospedes/desativar-hospedes")
-})
-
-router.post("/busca-desativar-hospedes", verifica_atendente, (req, res) => {
-    Hospede.findOne({cpf: req.body.busca_cpf}).then((hospede) => {
+router.get("/desativar-hospedes/:id", verifica_atendente, (req, res) => {
+    Hospede.findOne({_id: req.params.id}).then((hospede) => {
         if(hospede && hospede.ativo == true){
             res.render("hospedes/desativar-hospedes", {hospede: hospede})
         }else {
@@ -1360,7 +1363,7 @@ router.get("/ver-especialidade/:id", verifica_atendente, (req, res) => {
 //Rotas para gerenciamento de hóspedes.
 router.get("/gerenciar-hospedes", verifica_atendente, (req, res) => {
     Hospede.find({ativo: true}).then((hospedes) => {
-        
+        res.render("hospedes/gerenciar-hospedes", {hospedes: hospedes})
     }).catch((err) => {
         req.flash("error_msg", "Erro ao encontrar os hóspedes!")
         res.redirect("/dashboard")

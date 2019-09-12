@@ -1,0 +1,24 @@
+ <h3>Ver hóspede: </h3>
+<div class="card">
+    <div class="card-body">
+        <form action="" method="POST">
+                <input type="text" name="cpf_antigo" hidden value="{{hospede.cpf}}">
+            <label for="nome">Nome: </label>
+                <input type="text" name="nome" class="form-control" value="{{hospede.nome}}" disabled>
+            <label for="data_nascimento">Data de nascimento: </label>
+                <input type="date" name="data_nascimento" value="{{dateFormatiso hospede.data_nascimento}}" class="form-control" disabled>
+            <label for="rg">RG: </label>
+                <input type="text" name="rg" value="{{hospede.rg}}" class="form-control" disabled>
+            <label for="cpf">CPF: </label>
+                <input type="text" name="cpf" value="{{hospede.cpf}}" class="form-control" disabled>
+            <label for="telefone_1">Telefone: </label>
+                <input type="text" name="telefone_1" value="{{hospede.telefone_1}}" class="form-control" disabled>
+            <label for="telefone_2">Telefone 2: </label>
+                <input type="text" name="telefone_2" value="{{hospede.telefone_2}}" class="form-control" disabled>
+            <label for="email">Email: </label>
+                <input type="email" name="email" value="{{hospede.email}}" class="form-control" disabled>
+            <label for="observacoes">Observações:</label>
+                <textarea name="observacoes" class="form-control" rows="5" disabled></textarea>
+        </form>
+    </div>
+</div>
