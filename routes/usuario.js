@@ -1357,4 +1357,15 @@ router.get("/ver-especialidade/:id", verifica_atendente, (req, res) => {
     })
 })
 
+//Rotas para gerenciamento de hóspedes.
+router.get("/gerenciar-hospedes", verifica_atendente, (req, res) => {
+    Hospede.find({ativo: true}).then((hospedes) => {
+        
+    }).catch((err) => {
+        req.flash("error_msg", "Erro ao encontrar os hóspedes!")
+        res.redirect("/dashboard")
+        console.log(err)
+    })
+})
+
 module.exports = router
