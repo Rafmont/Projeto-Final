@@ -1,26 +1,38 @@
 //Carregando módulos.
-const express = require('express');
-const handlebars = require('express-handlebars');
-const bodyParser = require('body-parser');
-const app = express()
-const path = require("path")
-const mongoose = require("mongoose");
-const session = require("express-session");
-const flash = require("connect-flash");
-const passport = require("passport")
-require("./config/auth")(passport)
-require("./models/Usuario")
-const Usuario = mongoose.model("usuarios")
-const bcrypt = require("bcryptjs")
-const rotas_usuario = require("./routes/usuario")
-const rotas_admin = require("./routes/admin")
-const moment = require('moment')
-require("./models/Evento")
-const Evento = mongoose.model("eventos")
-const {verifica_login} = require("./helpers/verifica_login")
-require("./models/ContaAcesso")
-const ContaAcesso = mongoose.model("contasacesso")
-const DateCalculator = require('date-calculator')
+    //Carregamento de módulos do Node.JS
+    const express = require('express');
+    const handlebars = require('express-handlebars');
+    const bodyParser = require('body-parser');
+    const app = express()
+    const path = require("path")
+    const mongoose = require("mongoose");
+    const session = require("express-session");
+    const flash = require("connect-flash");
+    const passport = require("passport")
+    const moment = require('moment')
+    const bcrypt = require("bcryptjs")
+    const DateCalculator = require('date-calculator')
+    
+    //Carregamento dos arquivos de rotas separados.
+    const rotas_usuario = require("./routes/usuario")
+    const rotas_admin = require("./routes/admin")
+
+    //Carregamento de Helpers para o sistema.
+    const {verifica_login} = require("./helpers/verifica_login")
+
+    //Carregamento das models utilizadas.
+    require("./models/ContaAcesso")
+    require("./models/Evento")
+    require("./models/Usuario")
+
+    //Definição das constantes que recebem os models do banco de dados.
+    const Usuario = mongoose.model("usuarios")
+    const ContaAcesso = mongoose.model("contasacesso")
+    const Evento = mongoose.model("eventos")
+    
+    //Outros
+    require("./config/auth")(passport)
+    
 
 //Configurações
 //Sessão
@@ -52,6 +64,9 @@ const DateCalculator = require('date-calculator')
 //handlebars
 
     app.engine('handlebars', handlebars({defaultLayout: 'main', helpers: {
+        //Definição dos Helpers para Handlebars:
+
+        //Helper para apresentação dos dados em formato de SELECT, conforme a opção do banco de dados.
         select: function(value, options) {
             return options.fn(this)
             .split('\n')
@@ -61,12 +76,19 @@ const DateCalculator = require('date-calculator')
             })
             .join('\n')
         },
+
+        //Helper para formatação da data para o usuiário no formato Brasileiro.
         dateFormat: function(date) {
             return moment(date).format('DD-MM-YYYY')
         },
+
+        //Helper para a formatação da data para o sistema no formato ISO internacional.
         dateFormatiso: function(date) {
             return moment(date).format('YYYY-MM-DD')
         },
+
+        //Helper para melhor uso de condições no sistema, onde é possível comparar dois elementos, ao inves de verificar apenas se é
+        //true ou false.
         ifcond: function(v1, operator, v2, options){
             switch (operator) {
                 case '==':
@@ -93,6 +115,8 @@ const DateCalculator = require('date-calculator')
                     return options.inverse(this);
             }
         },
+
+        //Helper para agrupar em determinado número os elementos levados do banco de dados, melhorando a exibição.
         grouped_each: function(every, context, options){
             var out = "", subcontext = [], i;
             if (context && context.length > 0) {
@@ -107,6 +131,8 @@ const DateCalculator = require('date-calculator')
             }
             return out;
         },
+
+        //Helper para verificar se uma determinada data já passou conforme o dia de hoje.
         has_passed: function(dateString, options) {
             if(moment(dateString).isAfter(moment())){
               return options.fn(this);
@@ -158,35 +184,20 @@ const DateCalculator = require('date-calculator')
         })(req, res, next)
     })
 
+    //Rota para capturar a requisição de logout do sistema.
     app.get("/logout", (req, res) => {
         req.logout()
         req.flash("success_msg", "Deslogado com sucesso!")
         res.redirect("/")
     })
 
-    app.get("/teste-calculadora", (req, res) => {
-        res.render("teste")
-    })
-
-    app.post("/calcula-data", (req, res) => {
-        console.log(moment.utc(moment(Date.now,"DD/MM/YYYY HH:mm:ss").diff(moment(req.body.data,"DD/MM/YYYY HH:mm:ss"))).format("HH:mm:ss"))
-
-        var a = moment(Date.now())
-        var b = moment(req.body.data)
-        var duration = moment.duration(a.diff(b))
-        var dias = duration.asDays();
-        var dias = dias * -1
-        var dias = dias + 1
-        var dias = Math.round(dias)
-        console.log(dias)
-
-        res.render("teste")
-    })
-
+    //Chamada das rotas definidas em outros arquivos.
     app.use('/usuario', rotas_usuario)
     app.use('/admin', rotas_admin)
 
+
 //Outros
+    //Definição da porta e deixando o servidor na espera de novas requisições.
     const PORT = 8081
     app.listen(PORT, () => {
         console.log("Servidor Rodando");
