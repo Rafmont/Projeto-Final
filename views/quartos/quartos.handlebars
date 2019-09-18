@@ -1,91 +1,61 @@
-<script>
-
-  document.addEventListener('DOMContentLoaded', function() {
-    var calendarEl = document.getElementById('calendar');
-    var calendar = new FullCalendar.Calendar(calendarEl, {
-      height: 550,
-      plugins: [ 'interaction', 'dayGrid', 'timeGrid', 'list' ],
-      header: {
-        left: 'prev,next today',
-        center: 'title',
-        right: 'dayGridMonth'
-      },
-
-      eventClick: function(info) {
-        window.location.href = "/admin/ver-evento/" + info.event.id
-      },
-
-      defaultDate: Date.now(),
-      navLinks: true, // can click day/week names to navigate views
-      businessHours: true, // display business hours
-      editable: true,
-      locale: 'pt-br',
-      events: [
-        {{#each estadias}}
-            {
-              title: '{{quarto.titulo}}',
-              start: '{{dateFormatiso data_entrada}}',
-              end: '{{dateFormatiso data_saida}}T12:00:00',
-              color: '#5BC0DE',
-              id: '{{_id}}'
-            }, 
-        {{/each}}
-      ]
-    });
-
-    calendar.render();
-  });
-
-</script>
-
-
-
-
-
-
-
 {{#if quartos}}
-    <h3>Quartos:</h3>
-<div class="card">
-<div class="card-body">
-    <a href="/usuario/cadastro-quarto"><button class="btn btn-success">Cadastrar</button></a>
-    <hr>
-    <div class="container">
-        {{#grouped_each 3 quartos}}
-            <div class="row">
-                {{#each this}}
-                    <div class="col" style="padding: 2%;text-align:center;">
-                        <h5>{{titulo}}</h5>
-                        <hr>
-                        <p>{{tipo}}</p>
-                        <p><strong>Diária: R$ {{diaria}},00</strong></p>
-                        <small>Capacidade: {{capacidade}}</small>
-                        <hr>
-                        {{#ifcond estado '==' "disponivel"}}
-                            <a href="/usuario/check-in/{{_id}}"><button class="btn btn-success">Disponível (fazer Check-in)</button></a>
-                        {{/ifcond}}
-                        {{#ifcond estado '==' "manutencao"}}
-                            <button class="btn btn-info" disabled>Em Manutenção</button>
-                        {{/ifcond}}
-                        {{#ifcond estado '==' "ocupado"}}
-                            <a href="/usuario/check-out/{{_id}}"><button class="btn btn-danger">Ocupado (fazer Check-out)</button></a>
-                        {{/ifcond}}
-                        <hr>
-                        <a href="/usuario/alterar-quarto/{{_id}}"><button class="btn btn-success">Alterar</button></a>
-                        <a href="/usuario/desativar-quarto/{{_id}}"><button class="btn btn-danger">Desativar</button></a>
-                    </div>
-                {{/each}}
-            </div>
-        {{/grouped_each}}
+<h3>Gerenciar Quartos</h3>
+<div class="card"> 
+    <div class="card-body">
+        <h5>Buscar:</h5>
+        <table class="table" style="text-align:center">
+            <tr>
+                <td>
+                    <input type="text" id="palavra" onkeyup="buscaNome()" placeholder="Digite o nome do quarto..." class="form-control mt-2">
+                </td>
+                <td>
+                    <a href="/usuario/cadastro-quarto"><img class="mt-2" src="/img/add.png"></a>
+                </td>
+            </tr>
+        </table>
+        {{#if quartos}}
+        <table class="table" id="tabela" style="text-align:center">
+            <tr>
+                <th>Nome</th>
+                <th>Tipo</th>
+                <th>Capacidade</th>
+                <th>Diária (R$)</th>
+                <th>Disponibilidade</th>
+                <th>Estadias</th>
+                <th>Detalhes</th>
+                <th>Editar</th>
+                <th>Desativar</th>
+            </tr>
+            {{#each quartos}}
+            <tr>
+                <td>{{titulo}}</td>
+                <td>{{tipo}}</td>
+                <td>{{capacidade}}</td>
+                <td>{{diaria}}</td>
+                <td>
+                {{#ifcond estado '==' 'disponivel'}}
+                  Disponível
+                {{/ifcond}}
+                {{#ifcond estado '==' 'ocupado'}}
+                  Ocupado
+                {{/ifcond}}
+                {{#ifcond estado '==' 'manutencao'}}
+                  Em manutenção
+                {{/ifcond}}
+                </td>
+                <td><a href="/usuario/agenda-quarto/{{_id}}"><img src="/img/calendar.png"></a></td>
+                <td><a href="/usuario/ver-quarto/{{_id}}"><img src="/img/eye.png"></a></td>
+                <td><a href="/usuario/alterar-quarto/{{_id}}"><img src="/img/black-ink-pen.png"></a></td>
+                <td><a href="/usuario/desativar-quarto/{{_id}}"><img src="/img/delete.png" width="22"></a></td>
+            </tr>
+            {{/each}}
+        </table>
+        {{else}}
+        <h4>Sem funcionários cadastrados!</h4>
+        {{/if}}
     </div>
 </div>
-</div><br><br>
-<div class="card">
-<div class="card-body">
-    <div id='calendar'></div>
 
-</div>
-</div>
 {{else}}
 <div class="card">
 <div class="card-body">
@@ -95,3 +65,28 @@
 </div>
 </div>
 {{/if}}
+
+
+<script>
+    function buscaNome() {
+        var entrada, filtro, tabela, tr, td, i, txtValue;
+
+        entrada = document.getElementById("palavra");
+        filtro = entrada.value.toUpperCase();
+        tabela = document.getElementById("tabela");
+        tr = tabela.getElementsByTagName("tr");
+
+
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[0];
+            if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filtro) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
+</script>

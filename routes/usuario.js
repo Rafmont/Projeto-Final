@@ -869,6 +869,47 @@ router.post("/alterar-quarto", verifica_atendente, (req, res) => {
     })
 })
 
+/*
+    Nome da Rota: Ver quarto
+    Tipo de Rota: GET
+    Parâmetro: id (Referênte ao quarto, selecionado na interface de check-in check-out)
+    Função da Rota: Buscar um quarto correspondente ao ID do parâmetro e renderizar a view ver-quarto
+    Autor: Rafael Monteiro
+*/
+router.get("/ver-quarto/:id", verifica_atendente, (req, res) => {
+    //Busca do quarto referênte ao ID, caso de sucesso renderiza a view ver-quarto enviando o quarto encontrado.
+    //Em caso de falha, tratamento de erros e redirecionamento.
+    Quarto.findOne({_id: req.params.id}).then((quarto) => {
+        res.render("quartos/ver-quarto", {quarto: quarto})
+    }).catch((err) => {
+        req.flash("error_msg", "Erro ao encontrar quarto!")
+        res.redirect("/usuario/quartos")
+        console.log(err)
+    })
+})
+
+/*
+    Nome da Rota: Agenda quarto
+    Tipo de Rota: GET
+    Parâmetro: id (Referênte ao quarto, selecionado na interface de check-in check-out)
+    Função da Rota: Buscar por estadias correspondentes ao ID do parâmetro do quarto e renderizar a view agenda-quarto
+    Autor: Rafael Monteiro
+*/
+router.get("/agenda-quarto/:id", verifica_atendente, (req, res) => {
+    //Busca por estadias que possuem o quarto requisitado e que ao mesmo tempo esteja ativa.
+    //Em caso de sucesso, renderiza a view agenda-quarto, mostrando a agenda compelta com todas as estadias deste quarto.
+    //Em caso de falha, retorna a interface de quartos e trata os erros.
+    Estadia.find({quarto: req.params.id, ativa: true}).populate("hospede").then((estadias) => {
+        //Captura o id do quarto para utilizar o botão nova estadia no calendário de agendamento.
+        id_quarto = req.params.id
+        res.render("quartos/agenda-quarto", {estadias: estadias, id_quarto: id_quarto})
+    }).catch((err) => {
+        req.flash("error_msg", "Erro ao encontrar estadias")
+        res.redirect("/usuario/quartos")
+        console.log(err)
+    })
+})
+
 router.get("/desativar-quarto/:id", verifica_atendente, (req, res) => {
     Quarto.findOne({_id: req.params.id}).then((quarto) => {
         res.render("quartos/desativar-quarto", {quarto: quarto})
