@@ -33,6 +33,10 @@ const Estadia = new Schema({
         type: Boolean,
         default: true
     },
+    ja_ocorreu: {
+        type: Boolean,
+        default: false
+    },
     valor_estadia: {
         type: Number,
     }

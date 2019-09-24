@@ -1154,7 +1154,13 @@ router.post("/busca-estadia", verifica_atendente, (req, res) => {
 
     
 })
-
+ /*
+    Nome da Rota: Listar Faturas
+    Tipo de Rota: GET
+    Parâmetro: Nenhum. 
+    Função da Rota: Buscar todas as faturas em aberto e apresenta-las na tela.
+    Autor: Rafael Monteiro
+*/
 router.get("/listar-faturas", verifica_atendente, (req, res) => {
     Fatura.find({ativa: true}).populate("hospede").then((faturas) => {
         res.render("financeiro/lista-faturas", {faturas: faturas})
@@ -1165,12 +1171,19 @@ router.get("/listar-faturas", verifica_atendente, (req, res) => {
     })
 })
 
+/*
+    Nome da Rota: Ver Fatura
+    Tipo de Rota: GET
+    Parâmetro: id (referênte a fatura clicada na interface anterior.)
+    Função da Rota:
+    Autor: Rafael Monteiro
+*/
 router.get("/ver-fatura/:id", verifica_atendente, (req, res) => {
     Fatura.findOne({_id: req.params.id}).then((fatura) => {
         Consulta.find({fatura: fatura._id}).populate("servico").populate("terapeuta").then((consultas) => {
             Hospede.findOne({_id: fatura.hospede}).then((cliente) => {
-                Estadia.findOne({hospede: cliente._id, ativa: true}).then((estadia) => {
-                    res.render("financeiro/fatura-detalhada", {consultas: consultas, cliente: cliente, fatura: fatura, estadia: estadia})
+                Estadia.find({hospede: cliente._id, ativa: true}).then((estadias) => {
+                    res.render("financeiro/fatura-detalhada", {consultas: consultas, cliente: cliente, fatura: fatura, estadias: estadias})
                 }).catch((err) => {
                     req.flash("error_msg", "Erro ao encontrar estadia da fatura.")
                     res.redirect("/dashboard")
@@ -1408,6 +1421,51 @@ router.get("/gerenciar-hospedes", verifica_atendente, (req, res) => {
     }).catch((err) => {
         req.flash("error_msg", "Erro ao encontrar os hóspedes!")
         res.redirect("/dashboard")
+        console.log(err)
+    })
+})
+
+/*
+    Nome da Rota: Ver estadia
+    Tipo de Rota: GET
+    Parâmetro: id (Referênte a estadia marcada)
+    Função da Rota: Apresentar uma estadia definida.
+    Autor: Rafael Monteiro
+*/
+router.get("/ver-estadia/:id", verifica_atendente, (req, res) => {
+    //Busca de um atendimento com pelo ID que foi enviado.
+    //Renderização da view em caso de sucesso. Tratamento de erros em caso de falha.
+    Estadia.findOne({_id: req.params.id}).populate("hospede").then((estadia) => {
+        res.render("quartos/ver-estadia", {estadia: estadia})
+    }).catch((err) => {
+        req.flash("error_msg", "Erro ao encontrar estadia!")
+        res.redirect("/usuario/quartos")
+        console.log(err)
+    })
+})
+
+/*
+    Nome da Rota: Check-in Check-out
+    Tipo de Rota: GET
+    Parâmetro: Nenhum.
+    Função da Rota: Apresentar Caléndario de estadias e quartos que estão disponíveis no momento.
+    Autor: Rafael Monteiro
+*/
+router.get("/checkin-checkout", verifica_atendente, (req, res) => {
+    //Busca por todos os quartos para que sejam exibidos, em caso de falha, tratamento de erros.
+    Quarto.find().then((quartos) => {
+        //Busca de todas estadias para que sejam exibidas no calendario.
+        //Em caso de falha, tratamento de erros.
+        Estadia.find().populate('quarto').then((estadias) => {
+            res.render("quartos/checkin-checkout", {quartos: quartos, estadias: estadias})
+        }).catch((err) => {
+            req.flash("error_msg", "Erro ao encontrar estadias!")
+            res.redirect("/dashboard")
+            console.log(err)
+        })
+    }).catch((err) => {
+        req.flash("error_msg", "Erro ao encontrar quarto!")
+        res.rendirect("/dashboard")
         console.log(err)
     })
 })

@@ -1,7 +1,7 @@
 <h3>Fatura {{cliente.nome}}</h3>
 <div class="card">
     <div class="card-body">
-        {{#if estadia}}
+        {{#if estadias}}
         <h5>Estadia</h5>
         <table class="table">
             <tr style="text-align: center">
@@ -10,12 +10,14 @@
                 <th>Diárias</th>
                 <th>Valor</th>
             </tr>
+            {{#each estadias}}
             <tr style="text-align: center">
-                <td>{{dateFormat estadia.data_entrada}}</td>
-                <td>{{dateFormat estadia.data_saida}}</td>
-                <td>{{estadia.diarias}}</td>
-                <td><strong>$ {{estadia.valor_estadia}}</strong></td>
+                <td>{{dateFormat data_entrada}}</td>
+                <td>{{dateFormat data_saida}}</td>
+                <td>{{diarias}}</td>
+                <td><strong>R$ {{valor_estadia}}</strong></td>
             </tr>
+            {{/each}}
         </table>
         <hr>
         {{/if}}

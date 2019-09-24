@@ -1,0 +1,23 @@
+<div class="card">
+    <div class="card-body">
+        <h3>Estadia de {{estadia.hospede.nome}}</h3><br>
+        <table class="table" >
+            <tr>
+                <th>Data de Check-In: </th>
+                <td style="text-align: left">{{dateFormat estadia.data_entrada}}</td>
+            </tr>
+            <tr>
+                <th>Data de Check-Out: </th>
+                <td style="text-align: left">{{dateFormat estadia.data_saida}}</td>
+            </tr>
+            <tr>
+                <th>Diárias: </th>
+                <td style="text-align: left">{{estadia.diarias}}</td>
+            </tr>
+            <tr>
+                <th>Valor da Estadia: </th>
+                <td style="text-align: left">R$ {{estadia.valor_estadia}}</td>
+            </tr>
+        </table>
+    </div>
+</div>

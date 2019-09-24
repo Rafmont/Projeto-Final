@@ -22,6 +22,8 @@
     require("../models/Usuario_Desativado")
     require("../models/Evento")
     require("../models/Hospede")
+    require("../models/Consulta")
+    require("../models/Estadia")
 
     //Definição das constantes que recebem os models do banco de dados.
     const ContaAcesso = mongoose.model("contasacesso")
@@ -32,6 +34,8 @@
     const Evento = mongoose.model("eventos")
     const Terapeuta = mongoose.model("terapeutas")
     const Especialidade = mongoose.model("especialidades")
+    const Consulta = mongoose.model("consultas")
+    const Estadia = mongoose.model("estadias")
 
 
 //Início da definição de rodas /admin/
@@ -474,6 +478,7 @@ router.post("/desativar-funcionario", verifica_gerente, (req, res) => {
         console.log(err)
     })
 })
+
 
 
 module.exports = router

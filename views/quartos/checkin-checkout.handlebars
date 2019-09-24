@@ -1,0 +1,110 @@
+
+<h3>Quartos Disponíves </h3>
+<div class="card"> 
+    <div class="card-body">
+        <h5>Buscar:</h5>
+        <table class="table" style="text-align:center">
+            <tr>
+                <td>
+                    <input type="text" id="palavra" onkeyup="buscaNome()" placeholder="Digite o nome do quarto..." class="form-control mt-2">
+                </td>
+            </tr>
+        </table>
+        
+        <table class="table" id="tabela" style="text-align:center">
+            <tr>
+                <th>Nome</th>
+                <th>Tipo</th>
+                <th>Capacidade</th>
+                <th>Diária (R$)</th>
+                <th>Disponibilidade</th>
+                <th>Agendar</th>
+            </tr>
+            {{#each quartos}}
+            {{#ifEquals estado 'disponivel'}}
+            <tr>
+                <td>{{titulo}}</td>
+                <td>{{tipo}}</td>
+                <td>{{capacidade}}</td>
+                <td>{{diaria}}</td>
+                <td>
+                {{#ifcond estado '==' 'disponivel'}}
+                  Disponível
+                {{/ifcond}}
+                {{#ifcond estado '==' 'ocupado'}}
+                  Ocupado
+                {{/ifcond}}
+                {{#ifcond estado '==' 'manutencao'}}
+                  Em manutenção
+                {{/ifcond}}
+                </td>
+                <td><a href="/usuario/check-in/{{_id}}"><img src="/img/calendar.png"></a></td>
+            </tr>
+            {{/ifEquals}}
+            {{/each}}
+        </table>
+    </div>
+</div>
+<hr>
+<div id="calendar"></div>
+
+
+<script>
+    function buscaNome() {
+        var entrada, filtro, tabela, tr, td, i, txtValue;
+
+        entrada = document.getElementById("palavra");
+        filtro = entrada.value.toUpperCase();
+        tabela = document.getElementById("tabela");
+        tr = tabela.getElementsByTagName("tr");
+
+
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[0];
+            if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filtro) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+    var calendarEl = document.getElementById('calendar');
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+      plugins: [ 'interaction', 'dayGrid', 'timeGrid', 'list' ],
+      height: 800,    
+      header: {
+        left: 'prev,next today',
+        center: 'title',
+        right: 'dayGridMonth,timeGridWeek,timeGridDay'
+      },
+
+      eventClick: function(info) {
+        window.location.href = "/usuario/ver-estadia/" + info.event.id
+      },
+
+      defaultDate: Date.now(),
+      navLinks: true, // can click day/week names to navigate views
+      businessHours: true, // display business hours
+      editable: true,
+      locale: 'pt-br',
+      events: [
+        {{#each estadias}}
+            { 
+            title: '{{quarto.titulo}}',
+            start: '{{dateFormatiso data_entrada}}T00:00:00',
+            end: '{{dateFormatiso data_saida}}T00:00:00',
+            color: '#f5d34c',
+            id: '{{_id}}'
+            },  
+        {{/each}}
+      ]
+    });
+
+    calendar.render();
+  });
+</script>

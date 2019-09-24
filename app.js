@@ -12,6 +12,7 @@
     const moment = require('moment')
     const bcrypt = require("bcryptjs")
     const DateCalculator = require('date-calculator')
+    const CronJob = require('cron').CronJob
     
     //Carregamento dos arquivos de rotas separados.
     const rotas_usuario = require("./routes/usuario")
@@ -24,11 +25,15 @@
     require("./models/ContaAcesso")
     require("./models/Evento")
     require("./models/Usuario")
+    require("./models/Estadia")
+    require("./models/Quarto")
 
     //Definição das constantes que recebem os models do banco de dados.
     const Usuario = mongoose.model("usuarios")
     const ContaAcesso = mongoose.model("contasacesso")
     const Evento = mongoose.model("eventos")
+    const Estadia = mongoose.model("estadias")
+    const Quarto = mongoose.model("quartos")
     
     //Outros
     require("./config/auth")(passport)
@@ -140,6 +145,11 @@
               return options.inverse(this);
             }
         },
+
+        //Helper para verificar se algo é igual a outro.
+        ifEquals: function(arg1, arg2, options) {
+            return (arg1 == arg2) ? options.fn(this) : options.inverse(this);
+        },
     }}))
     app.set('view engine', 'handlebars')
     
@@ -156,7 +166,47 @@
 //Public
     app.use(express.static(path.join(__dirname, "public")))
 
+//Jobs Agendados
+    /*
+        Nome do Job:
+        Função do Job:
+        Frequência: 
+        Autor:
+    */
 
+    /*
+        Nome do Job:
+        Função do Job:
+        Frequência: 
+        Autor:
+    */
+    const teste_job = new CronJob('0 */5 * * * *', () => {
+        var data_hoje = Date.now()
+        Estadia.find({data_saida: {$lte: data_hoje}, ja_ocorreu: false}).then((estadias) => {
+            for(i=0; i<estadias.length; i++) {
+                estadia = estadias[i]
+                estadia.ja_ocorreu = true
+                estadia.save().then(() => {
+                    Quarto.findOne({_id: estadia.quarto}).then((quarto) => {
+                        if(quarto) {
+                            quarto.estado = 'disponivel'
+                            quarto.save().then(() => {                                
+                            }).catch((err) => {
+                                console.log(err)
+                            })
+                        }else {
+                            console.log("Nenhum quarto encontrado.")
+                        }
+                    }).catch((err) => {
+                        console.log(err)
+                    })
+                }).catch((err) => {
+                    console.log(err)
+                })
+                
+            }
+        })
+    }, null, true, 'America/Sao_Paulo')
 //Rotas
     //Rota para renderizar a página inicial do sistema.
     app.get('/', (req, res) => {
