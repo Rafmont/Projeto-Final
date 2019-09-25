@@ -17,7 +17,11 @@ const Servico = new Schema({
     ativo: {
         type: Boolean,
         default: true
-    } 
+    },
+    duracao: {
+        type: Number,
+        required: true
+    }
 
 })
 

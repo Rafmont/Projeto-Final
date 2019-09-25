@@ -1,7 +1,7 @@
 <h4>Agendar consulta:</h4>
 <div class="card">
     <div class="card-body">
-        <form action="/usuario/agendar-atendimento" method="POST">
+        <form action="/usuario/agendar-atendimento" id="formulario" method="POST">
             <label for="cpf_clinico">Terapêuta:</label>
                 <input type="text" name="cpf_terapeuta" class="form-control" list="terapeutas">
                 <datalist id="terapeutas">
@@ -29,17 +29,108 @@
 
             <label for="horario">Horário</label>
                 <input type="time" name="horario" class="form-control">
-
-            <label for="servico">Serviço</label>
-                <select name="servico" class="form-control">
-                    {{#each servicos}}
-                    <option value="{{_id}}">{{nome}}</option>
-                    {{/each}}
-                </select>
-                
+            <br>
+            <label for="buscserv">Busca de serviços:</label>
+            <input type="text" id="palavra" onkeyup="buscaNome()" placeholder="Digite o nome do serviço..." class="form-control mt-2">
+            <br>
+            <table class="table" id="tabela" style="text-align: center">
+                <tr>
+                    <th>Nome Do Serviço</th>
+                    <th>Duração (Minutos)</th>
+                    <th>Valor (R$)</th>
+                    <th>Marcar</th>
+                </tr>
+            {{#each servicos}}
+                <tr>
+                    <td>{{nome}}</td>
+                    <td>{{duracao}}</td>
+                    <td><p>{{valor}}</p></td>
+                    <td><input onchange="verificaValor()" name="check" type="checkbox" class="form-check-input" value="{{_id}}"></td>
+                </tr>
+            {{/each}}  
+            <tr>
+                <td><strong>Valor Total: </strong></td>
+                <td colspan="2"><strong><p id="resultado-soma">R$ 0</p></strong></td>
+            </tr>
+            </table>
+            
+            
+            <input type="text" id="test" class="form-control">
             <button type="submit" class="btn btn-success mt-2">Agendar</button>
         </form>
     </div>
 </div>
 
 
+<script>
+    function buscaNome() {
+        var entrada, filtro, tabela, tr, td, i, txtValue;
+
+        
+        entrada = document.getElementById("palavra");
+        filtro = entrada.value.toUpperCase();
+        tabela = document.getElementById("tabela");
+        tr = tabela.getElementsByTagName("tr");
+
+
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[0];
+            console.log(td)
+            if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filtro) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
+
+    function verificaValor() {
+        var tabela, tr, td, i, input, valor, resultado_total, passar;
+
+        resultado_total = document.getElementById("resultado-soma")
+        resultado_total = parseInt(resultado_total.innerText, 10)
+        if (!resultado_total) {
+            resultado_total = 0
+        }
+
+
+        tabela = document.getElementById("tabela");
+        tr = tabela.getElementsByTagName("tr");
+
+        var resultados = [];
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[3];
+            input = tr[i].getElementsByTagName("input")[0];
+            if (input) {
+                if (input.checked) {
+                    conteudo = tr[i].getElementsByTagName("p")[0];
+                    valor = parseInt(conteudo.innerText, 10);
+                    resultados[i] = valor
+                    
+                } else {
+                    resultados[i] = 0
+                }
+            }
+        }
+
+    	passar = 0
+        for (i = 1; i < resultados.length; i++) {
+            passar = passar + resultados[i];
+        }
+        
+        console.log(resultados)
+        document.getElementById("resultado-soma").innerHTML = "R$ " + passar;
+    }
+
+    function teste() {
+        var form = document.getElementById("formulario");
+        var i;
+        for (i = 0; i < form.length; i++) {
+            alert(i + " -- " + document.getElementById("formulario").elements.item(i).value)
+        }
+    }
+
+</script>

@@ -501,8 +501,16 @@ router.get("/escolher-clinico", verifica_atendente, (req, res) => {
     })
 })
 
+/*
+    Nome da Rota: Agendar Atendimento.
+    Tipo de Rota: GET
+    Parâmetro: Nenhum.
+    Função da Rota: Recuperar os dados de Serviços, terapeutas e hóspedes, para serem
+    //renderizadaos na view agendar-atendimento.
+    Autor: Rafael Monteiro
+*/
 router.get("/agendar-atendimento", verifica_atendente, (req, res) => {
-    Servico.find().then((servicos) => {
+    Servico.find({ativo: true}).then((servicos) => { 
         Terapeuta.find({ativo: true}).then((terapeutas) => {
              Hospede.find().then((hospedes) => {
                 res.render("clinicos/agendar-atendimento", {servicos: servicos, terapeutas: terapeutas, hospedes: hospedes})
