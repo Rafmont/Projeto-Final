@@ -270,6 +270,13 @@ router.get("/ver-funcionario/:id", verifica_atendente, (req, res) => {
     })
 })
 
+/*
+    Nome da Rota: Serviços 
+    Tipo de Rota: GET
+    Parâmetro: Nenhum.
+    Função da Rota: Recuperar todos os serviços e renderizar a view servicos
+    Autor: Rafael Monteiro
+*/
 router.get("/servicos", verifica_atendente, (req, res) => {
     Servico.find({ativo: true}).sort({nome: 1}).then((servicos) => {
         res.render("clinicos/servicos", {servicos: servicos})
@@ -279,16 +286,33 @@ router.get("/servicos", verifica_atendente, (req, res) => {
     })
 })
 
+/*
+    Nome da Rota: Cadastro de Serviço
+    Tipo de Rota: get  
+    Parâmetro: Nenhum.
+    Função da Rota: Renderizar a view "cadastro-servico" referente ao formulário de cadastro de serviços.
+    Autor: Rafael Monteiro
+*/
 router.get("/cadastro-servico", verifica_atendente, (req, res) => {
     res.render("clinicos/cadastro-servico")
 })
 
+
+/*
+    Nome da Rota: Cadastro de Serviço
+    Tipo de Rota: POST
+    Parâmetro: Nenhum.
+    Função da Rota: Recuperar os dados que foram enviados pelo formulário e criar um novo documento no banco de dados
+        referente a um novo serviço.
+    Autor: Rafael Monteiro
+*/
 router.post("/cadastro-servico", verifica_atendente, (req, res) => {
 
     const novoServico = new Servico({
         nome: req.body.titulo,
         descricao: req.body.descricao,
-        valor: req.body.valor
+        valor: req.body.valor,
+        duracao: req.body.duracao
     }) 
     novoServico.save().then(() => {
         req.flash("success_msg", "Serviço cadastrado com sucesso!")
@@ -300,6 +324,13 @@ router.post("/cadastro-servico", verifica_atendente, (req, res) => {
 
 })
 
+/*
+    Nome da Rota: Desativar Serviço
+    Tipo de Rota: GET
+    Parâmetro: id (Referênte ao serviço clicado na interface anterior)
+    Função da Rota: Buscar um evento que corresponde ao id recebido por parâmetro e renderizar a view desativar-servico.
+    Autor: Rafael Monteiro
+*/
 router.get("/desativar-servico/:id", verifica_atendente, (req, res) => {
     Servico.findOne({_id: req.params.id}).then((servico) => {
         res.render("clinicos/desativar-servico", {servico: servico})
@@ -309,6 +340,13 @@ router.get("/desativar-servico/:id", verifica_atendente, (req, res) => {
     })
 })
 
+/*
+    Nome da Rota: Desativar Serviço
+    Tipo de Rota: POST
+    Parâmetro: Nenhum.
+    Função da Rota: Resgatar a confirmação de desativação do serviço e alterar sua propriedade "ativo" para "false".
+    Autor: Rafael Monteiro
+*/
 router.post("/desativar-servico", verifica_atendente, (req, res) => {
     Servico.findOne({_id: req.body.id}).then((servico) => {
         servico.ativo = false
@@ -326,6 +364,13 @@ router.post("/desativar-servico", verifica_atendente, (req, res) => {
     })
 })
 
+/*
+    Nome da Rota: Alterar Serviço  
+    Tipo de Rota: GET
+    Parâmetro: id (Referênte ao serviço clicado na página anterior)
+    Função da Rota: Buscar um serviço com ID correspondente ao parâmetro e renderizar a view alterar-servico
+    Autor: Rafael Monteiro
+*/
 router.get("/alterar-servico/:id", verifica_atendente, (req, res) => {
     Servico.findOne({_id: req.params.id}).then((servico) => {
         res.render("clinicos/alterar-servico", {servico:servico})
@@ -335,11 +380,19 @@ router.get("/alterar-servico/:id", verifica_atendente, (req, res) => {
     })
 })
 
+/*
+    Nome da Rota: Alterar Servico
+    Tipo de Rota: POST 
+    Parâmetro: Nenhum.
+    Função da Rota: Alterar o documento de um serviço com base nos dados passados pelo formulário.
+    Autor: Rafael Monteiro
+*/
 router.post("/alterar-servico", verifica_atendente, (req, res) => {
     Servico.findOne({_id: req.body.id}).then((servico) => {
         servico.nome = req.body.titulo
         servico.descricao = req.body.descricao
         servico.valor = req.body.valor
+        servico.duracao = req.body.duracao
         servico.save().then(() => { 
             req.flash("success_msg", "Alterações realizadas com sucesso!")
             res.redirect("/usuario/servicos")
@@ -353,6 +406,13 @@ router.post("/alterar-servico", verifica_atendente, (req, res) => {
     })
 })  
 
+/*
+    Nome da Rota: Ver Serviço
+    Tipo de Rota: GET
+    Parâmetro: id (Referênte ao serviço clicado na página anterior)
+    Função da Rota: Recuperar um serviço com ID referênte ao parâmetro e renderizar a view
+    Autor: Rafael Monteiro
+*/
 router.get("/ver-servico/:id", verifica_atendente, (req, res) => {
     Servico.findOne({_id: req.params.id, ativo: true}).then((servico) => {
         res.render("clinicos/ver-servico", {servico: servico})
