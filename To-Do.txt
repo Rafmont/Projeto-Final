@@ -59,15 +59,26 @@ cores da agenda, lotação. (X)
 
 disponibilidade dos horários.(X)
 
-implementar dois ou mais serviços numa consulta
+implementar dois ou mais serviços numa consulta (parcial)
 
-mostrar o valor do serviço.
+mostrar o valor do serviço. (X)
 
-Tempo do serviço.
+Tempo do serviço. (X)
 
-limites de horarios.
 
 pensar - benefícios de hospedagem.
+
+Anotações dia 21
+
+Reativar funcionários ()
+
+Questão do valor fixo ()
+
+atendimento buscar primeiro por especialidade. ()
+    >Profissionais>Dia>Horário>Adicionar serviços.>validar. ()
+    Estadias>verificar as datas.>buscar por diárias ou data de check-out. ()
+
+VER FINANCEIRO!!!!!! ()
 
 
 Comando nodemon: 

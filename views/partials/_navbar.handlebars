@@ -86,6 +86,18 @@
 <nav class="navbar-sidebar">
     <ul class="list-unstyled navbar__list">
         {{#ifcond user.nivel_usuario "!=" 1}}
+        <li class="has-sub">
+            <a class="js-arrow" href="#">
+                <i class="zmdi zmdi-account"></i>{{user.nome}}</a>
+            <ul class="list-unstyled navbar__sub-list js-sub-list">
+                <li>
+                    <a href="/usuario/alterar-senha">Alterar Senha</a>
+                </li>
+                <li>
+                    <a href="/logout">Sair</a>
+                </li>
+            </ul>
+        </li>
         <li>
             <a href="/dashboard">
                 <i class="fas fa-tachometer-alt"></i>Página Inicial</a>
@@ -137,6 +149,18 @@
                 <i class="fas fa-chart-bar"></i>Faturas</a>
         </li>
         {{else}}
+        <li class="has-sub">
+            <a class="js-arrow" href="#">
+                <i class="zmdi zmdi-account"></i>{{user.nome}}</a>
+            <ul class="list-unstyled navbar__sub-list js-sub-list">
+                <li>
+                    <a href="/usuario/alterar-senha">Alterar Senha</a>
+                </li>
+                <li>
+                    <a href="/logout">Sair</a>
+                </li>
+            </ul>
+        </li>
         <li>
             <a href="/usuario/atendimentos-marcados/{{user.terapeuta}}">
                 <i class="fas fa-calendar-alt"></i>Consultas</a>
@@ -154,6 +178,7 @@
 
 <div class="page-container">
 <!-- HEADER DESKTOP-->
+<!--
 <header class="header-desktop">
     <div class="section__content section__content--p30">
         <div class="container-fluid">
@@ -185,6 +210,7 @@
         </div>
     </div>
 </header>
+-->
 <!-- END HEADER DESKTOP-->
 {{/if}}
 

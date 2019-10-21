@@ -38,12 +38,26 @@
 
         <!-- Main CSS-->
         <link href="/CoolAdmin/css/theme.css" rel="stylesheet" media="all">
-    
+
+        <!-- CSS Feito por mim (Rafael) -->
+        <link rel="stylesheet" href="/css/rafael-css.css">
+
+        <!--
+        <style>
+            body {
+                background-image: url("/img/wallpaper-2.jpg");
+                
+                background-position: center; /* Center the image */
+                background-repeat: no-repeat; /* Do not repeat the image */
+                background-size: cover; /* Resize the background image to cover the entire container */
+            }
+        </style>
+        -->
     </head>
     <body>
         {{#if user}}
         {{>_navbar}}    
-            <div class="main-content container">
+            <div class="main-content container" style="margin-top: -5%">
                 <div class="section__content section__content--p30">
                     <div class="container-fluid">
                         <div class="row">
@@ -69,13 +83,6 @@
                     </div>
                 </div>
             </div>
-        <div class="row">
-            <div class="col-md-12">
-                <div class="copyright">
-                    <p></p>
-                </div>
-            </div>
-        </div>
         {{else}}
             <div class="main-content container">
                 <div class="section__content section__content--p30">
@@ -103,13 +110,6 @@
                     </div>
                 </div>
             </div>
-        <div class="row">
-            <div class="col-md-12">
-                <div class="copyright">
-                    <p></p>
-                </div>
-            </div>
-        </div>
         {{/if}}
     </body>
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
