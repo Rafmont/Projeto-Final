@@ -1,47 +1,57 @@
-const express = require("express")
-const router = express.Router()
-const mongoose = require("mongoose")
-require("../models/Usuario")
-const Usuario = mongoose.model("usuarios")
-require("../models/Usuario_Desativado")
-const Usuario_Desativado = mongoose.model("usuarios_desativados")
-const bcrypt = require("bcryptjs")
-const passport = require("passport")
-const handlebars = require('express-handlebars');
-const moment = require('moment')
-require("../models/Evento")
-const Evento = mongoose.model("eventos")
-require("../models/Servico")
-const Servico = mongoose.model("servicos")
-require("../models/Hospede")
-const Hospede = mongoose.model("hospedes")
-require("../models/Fatura")
-const Fatura = mongoose.model("faturas")
-require("../models/Consulta")
-const Consulta = mongoose.model("consultas")
-const PDFDocument = require('pdfkit');
-const doc = new PDFDocument;
-var fs  = require('fs');
-require("../models/Produto")
-const Produto = mongoose.model("produtos")
-require("../models/Quarto")
-const Quarto = mongoose.model("quartos")
-require("../models/Estadia")
-const Estadia = mongoose.model("estadias")
-const {verifica_gerente} = require("../helpers/verifica_gerente")
-const {verifica_atendente} = require("../helpers/verifica_atendente")
-const {verifica_login} = require("../helpers/verifica_login")
-const {verifica_clinico} = require("../helpers/verifica_clinico")
-require("../models/ContaAcesso")
-const ContaAcesso = mongoose.model("contasacesso")
-require("../models/Terapeuta")
-const Terapeuta = mongoose.model("terapeutas")
-require("../models/Fatura-Consulta")
-const FaturaConsulta = mongoose.model("faturasconsultas")
-require("../models/FaturaProduto")
-const FaturaProduto = mongoose.model("faturaprodutos")
-require("../models/Especialidade")
-const Especialidade = mongoose.model("especialidades")
+//Carregando módulos
+    //Carregando módulos do Node.js
+    const express = require("express")
+    const router = express.Router()
+    const mongoose = require("mongoose")
+    const bcrypt = require("bcryptjs")
+    const passport = require("passport")
+    const handlebars = require('express-handlebars');
+    const moment = require('moment')
+    const PDFDocument = require('pdfkit');
+    var fs  = require('fs');
+
+    //Carregamento dos Helpers para o sistema.
+    const {verifica_gerente} = require("../helpers/verifica_gerente")
+    const {verifica_atendente} = require("../helpers/verifica_atendente")
+    const {verifica_login} = require("../helpers/verifica_login")
+    const {verifica_clinico} = require("../helpers/verifica_clinico")
+
+    //Carregamento das Models utilizadas
+    require("../models/Usuario")
+    require("../models/Usuario_Desativado")
+    require("../models/Evento")
+    require("../models/Servico")
+    require("../models/Hospede")
+    require("../models/Fatura")
+    require("../models/Consulta")
+    require("../models/Produto")
+    require("../models/Quarto")
+    require("../models/Estadia")
+    require("../models/ContaAcesso")
+    require("../models/Terapeuta")
+    require("../models/Fatura-Consulta")
+    require("../models/FaturaProduto")
+    require("../models/Especialidade")
+
+    //Definição das constantes para as models do banco de dados.
+    const Usuario = mongoose.model("usuarios")
+    const Evento = mongoose.model("eventos")
+    const Servico = mongoose.model("servicos")
+    const Hospede = mongoose.model("hospedes")
+    const Fatura = mongoose.model("faturas")
+    const Consulta = mongoose.model("consultas")
+    const Produto = mongoose.model("produtos")
+    const Quarto = mongoose.model("quartos")
+    const Estadia = mongoose.model("estadias")
+    const ContaAcesso = mongoose.model("contasacesso")
+    const Terapeuta = mongoose.model("terapeutas")
+    const FaturaConsulta = mongoose.model("faturasconsultas")
+    const FaturaProduto = mongoose.model("faturaprodutos")
+    const Especialidade = mongoose.model("especialidades")
+    const Usuario_Desativado = mongoose.model("usuarios_desativados")
+
+
+
 
 router.get('/cadastro-funcionario',  (req, res) => {
     res.render("funcionarios/cadastro-funcionario")
@@ -562,6 +572,51 @@ router.get("/escolher-clinico", verifica_atendente, (req, res) => {
 })
 
 /*
+    Nome da Rota: Marcar atendimento
+    Tipo de Rota: GET
+    Parâmetro: Nenhum.
+    Função da Rota: Renderizar uma view para selecionar a especialidade.
+    Autor: Rafael Monteiro
+*/
+router.get("/marcar-atendimento", verifica_atendente, (req, res) => {
+    //Busca todas as especialidades no banco para enviar para a view, caso de falha trata os erros com catch.
+    Especialidade.find().then((especialidades) => {
+        //Renderiza a view para quem requisitou na rota.
+        res.render("terapeutas/marcar-atendimento", {especialidades, especialidades})
+    }).catch((err) => {
+        req.flash("error_msg", "Erro ao encontrar especialidades!")
+        res.redirect("/dashboard")
+        console.log(err)
+    })
+})
+
+/*
+    Nome da Rota: Marcar atendimento - Escolher o terapêuta
+    Tipo de Rota: GET
+    Parâmetro: id (referente a especialidade definida anteriormente).
+    Função da Rota: Buscar todo os terapêutas que sejam compatíveis com uma especialidade.
+    Autor: Rafael Monteiro
+*/
+router.get("/marcar-atendimento-escolher-terapeuta/:id", verifica_atendente, (req, res) => {
+    //Busca por terapêutas que possuem a especialidade igual ao id passado por parâmetro. Caso de falha trata o erro.
+    Terapeuta.find({especialidade: req.params.id}).then((terapeutas) => {
+        //Passo adicional no tratamento de erros onde verifica se existe algum terapêuta com determinada especialidade.
+        //Caso não exista redireciona para selecionar especialidade.
+        console.log(terapeutas)
+        if (terapeutas != []) {
+            res.render("terapeutas/marcar-atendimento-escolher-terapeuta", {terapeutas: terapeutas})
+        } else {
+            req.flash("error_msg", "Não existem terapêutas com esta especialidade!")
+            res.redirect("/usuario/marcar-atendimento")
+        }
+    }).catch((err) => {
+        req.flash("error_msg", "Erro ao encontrar terapêutas com determinada especialidade!")
+        res.redirect("/usuario/marcar-atendimento")
+        console.log(err)
+    })
+})
+
+/*
     Nome da Rota: Agendar Atendimento.
     Tipo de Rota: GET
     Parâmetro: Nenhum.
@@ -750,42 +805,6 @@ router.get("/atendimentos-marcados/:id", verifica_clinico, (req, res) => {
     })
 })
 
-router.get("/pdf-consultas", (req, res) => {
-    // Pipe its output somewhere, like to a file or HTTP response
-    // See below for browser usage
-    doc.pipe(fs.createWriteStream('output.pdf'));
-     
-
-     
-    // Add another page
-    doc.addPage()
-       .fontSize(25)
-       .text('Here is some vector graphics...', 100, 100);
-     
-    // Draw a triangle
-    doc.save()
-       .moveTo(100, 150)
-       .lineTo(100, 250)
-       .lineTo(200, 250)
-       .fill("#FF3300");
-     
-    // Apply some transforms and render an SVG path with the 'even-odd' fill rule
-    doc.scale(0.6)
-       .translate(470, -380)
-       .path('M 250,75 L 323,301 131,161 369,161 177,301 z')
-       .fill('red', 'even-odd')
-       .restore();
-     
-    // Add some text with annotations
-    doc.addPage()
-       .fillColor("blue")
-       .text('Here is a link!', 100, 100)
-       .underline(100, 100, 160, 27, {color: "#0000FF"})
-       .link(100, 100, 160, 27, 'http://google.com/');
-     
-    // Finalize PDF file
-    doc.end();
-})
 
 router.get("/check-in", verifica_atendente, (req, res) => {
     res.render("hospedes/check-in")

@@ -1,0 +1,54 @@
+<h3>Marcar Atendimento</h3><br>
+<h4>Escolher especialidade desejada:</h4>
+<div class="card"> 
+    <div class="card-body">
+        <h5>Buscar:</h5>
+        <table class="table" style="text-align:center">
+            <tr>
+                <td>
+                    <input type="text" id="palavra" onkeyup="buscaNome()" placeholder="Digite o nome da especialidade..." class="form-control mt-2">
+                </td>
+            </tr>
+        </table>
+        {{#if especialidades}}
+        <table class="table" id="tabela" style="text-align:center">
+            <tr>
+                <th>Nome</th>
+                <th>Selecionar especialidade</th>
+            </tr>
+            {{#each especialidades}}
+            <tr>
+                <td>{{nome}}</td>
+                <td><a href="/usuario/marcar-atendimento-escolher-terapeuta/{{_id}}"><img src="/img/user.png"></a></td>
+            </tr>
+            {{/each}}
+        </table>
+        {{else}}
+        <h4>Sem especialidades cadastrados!</h4>
+        {{/if}}
+    </div>
+</div>
+
+<script>
+    function buscaNome() {
+        var entrada, filtro, tabela, tr, td, i, txtValue;
+
+        entrada = document.getElementById("palavra");
+        filtro = entrada.value.toUpperCase();
+        tabela = document.getElementById("tabela");
+        tr = tabela.getElementsByTagName("tr");
+
+
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[0];
+            if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filtro) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
+</script>
