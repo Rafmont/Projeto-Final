@@ -1,0 +1,30 @@
+<h3>Marcar Atendimento</h3><br>
+<h4>Escolher terapêuta:</h4>
+<div class="card">
+    <div class="card-body">
+        <h5>Buscar:</h5>
+        <table class="table" style="text-align:center">
+            <tr>
+                <td>
+                    <input type="text" id="palavra" onkeyup="buscaNome()" placeholder="Digite o nome da especialidade..." class="form-control mt-2">
+                </td>
+            </tr>
+        </table>
+        {{#if terapeutas}}
+            <table class="table" id="tabela" style="text-align:center">
+                <tr>
+                    <th>Nome</th>
+                    <th>Selecionar terapêuta</th>
+                </tr>
+                {{#each terapeutas}}
+                <tr>
+                    <td>{{nome}}</td>
+                    <td><a href="/usuario/marcar-atendimento-escolher-data/{{_id}}"><img src="/img/checkmark.png"></a></td>
+                </tr>
+                {{/each}}
+            </table>
+        {{else}}
+        <h4>Sem terapêutas com esta especialidade.</h4>
+        {{/if}}
+    </div>
+</div>

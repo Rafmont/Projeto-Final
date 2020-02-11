@@ -85,3 +85,9 @@ VER FINANCEIRO!!!!!! ()
 
 Comando nodemon: 
 set PATH=%PATH%;C:\Users\"Aqui seu usuario"\AppData\Roaming\npm;
+
+
+//Anotações 2020
+
+Alterar serviços para ter um valor cobrado pelo prestador 
+"Agendamentos de serviços personalizados"

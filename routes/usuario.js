@@ -572,13 +572,13 @@ router.get("/escolher-clinico", verifica_atendente, (req, res) => {
 })
 
 /*
-    Nome da Rota: Marcar atendimento
+    Nome da Rota: Agendar Serviço
     Tipo de Rota: GET
     Parâmetro: Nenhum.
     Função da Rota: Renderizar uma view para selecionar a especialidade.
     Autor: Rafael Monteiro
 */
-router.get("/marcar-atendimento", verifica_atendente, (req, res) => {
+router.get("/agendar-servico", verifica_atendente, (req, res) => {
     //Busca todas as especialidades no banco para enviar para a view, caso de falha trata os erros com catch.
     Especialidade.find().then((especialidades) => {
         //Renderiza a view para quem requisitou na rota.
@@ -588,6 +588,17 @@ router.get("/marcar-atendimento", verifica_atendente, (req, res) => {
         res.redirect("/dashboard")
         console.log(err)
     })
+})
+
+/*
+    Nome da Rota: Agendar Serviço
+    Tipo de Rota: GET
+    Parâmetro: Id (Referente a especialidade escolhida).
+    Função da Rota: Apresentar uma interface de busca de dia para verificar os serviços agendados.
+    Autor: Rafael Monteiro
+*/
+router.get("/agendar-servico-buscar-data/:id", verifica_atendente, (req, res) => {
+    res.render("terapeutas/agendar-servico-buscar-data", {especialidade: req.params.id})
 })
 
 /*
@@ -602,7 +613,6 @@ router.get("/marcar-atendimento-escolher-terapeuta/:id", verifica_atendente, (re
     Terapeuta.find({especialidade: req.params.id}).then((terapeutas) => {
         //Passo adicional no tratamento de erros onde verifica se existe algum terapêuta com determinada especialidade.
         //Caso não exista redireciona para selecionar especialidade.
-        console.log(terapeutas)
         if (terapeutas != []) {
             res.render("terapeutas/marcar-atendimento-escolher-terapeuta", {terapeutas: terapeutas})
         } else {
@@ -612,7 +622,23 @@ router.get("/marcar-atendimento-escolher-terapeuta/:id", verifica_atendente, (re
     }).catch((err) => {
         req.flash("error_msg", "Erro ao encontrar terapêutas com determinada especialidade!")
         res.redirect("/usuario/marcar-atendimento")
-        console.log(err)
+    })
+})
+
+/*
+    Nome da Rota: Marcar atendimento - Escolher data
+    Tipo de Rota: GET
+    Parâmetro: id (referente ao terapeuta definido anteriormente).
+    Função da Rota: Buscar a agenda do terapeuta solicitado.
+    Autor: Rafael Monteiro
+*/
+router.get("/marcar-atendimento-escolher-data/:id", verifica_atendente, (req, res) => {
+    //Busca por consultas ligadas ao ID do terapêuta.
+    Consulta.find({terapeuta: req.params.id}).populate("cliente").then((consultas) => {
+        res.render("terapeutas/marcar-atendimento-confimar-dados", {consultas: consultas})
+    }).catch((err) => {
+        req.flash("Não foi possível encontrar as consultas.")
+        res.redirect("/usuario/marcar-atendimento")
     })
 })
 

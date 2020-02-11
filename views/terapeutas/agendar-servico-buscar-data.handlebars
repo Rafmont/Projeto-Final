@@ -1,0 +1,36 @@
+<h3>Agendamento de Serviços Especializados</h3><br>
+<h4>Escolher data desejada:</h4>
+<div class="card">
+    <div class="card-body">
+        <h5>Buscar:</h5>
+        <form action="/usuario/busca-data" method="post">
+        <table class="table" style="text-align:center">
+        <tr>
+            <td>
+                <p id="alerta"></p>
+                <input type="date" id="data" onchange="verifica_data(this.value)" class="form-control mt-2">
+            </td>
+            <td>
+                <input type="text" value="{{especialidade}}" hidden>
+                <input style="margin-top: 5%;" type="image" src="/img/magnifer.png" alt="Submit Form" />
+            </td>
+        </tr>
+        </table>
+        </form>
+    </div>
+</div>
+
+<script>
+    function verifica_data(data_input) {
+        var data_hoje = new Date()
+        data_hoje = moment(data_hoje).format("DD-MM-YYYY")
+        data_input = moment(data_input).format("DD-MM-YYYY")
+
+        if(data_hoje > data_input) {
+           document.getElementById("data").valueAsDate = null;
+           document.getElementById("alerta").innerText = "Valor da data inserida é anterior a data atual!"
+        } else {
+            document.getElementById("alerta").innerText = ""
+        }
+    }
+</script>
