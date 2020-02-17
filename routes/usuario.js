@@ -614,20 +614,21 @@ router.post("/agendar-servico-ver-data", verifica_atendente, (req, res) => {
     var id_especilidade = req.body.id_especialidade
     var data_escolhida = moment(req.body.data)
     data_escolhida.toISOString()
-    console.log(data_escolhida)
 
     //Faz busca dos terapêutas com a determinada especilidade passada por ID.
     Terapeuta.find({especialidade: id_especilidade}).then((terapeutas) => {
+        var id_terapeutas = []
+        for(i = 0; i < terapeutas.length; i++) {
+            id_terapeutas[i] = terapeutas[i]._id;
+        }
+
         //Busca consultas dentre os terapêutas buscados e no dia selecionado.
-        Consulta.find({
-        terapeuta: {$in : [
-            terapeutas[0]._id,
-            terapeutas[1]._id,
-            terapeutas[2]._id
-        ]},
-        data_consulta: data_escolhida
-        }).populate("terapeuta").populate("servico").then((consultas) => {
-            res.render("terapeutas/agendar-servico-buscar-data", {consultas: consultas})
+        Consulta.find({data_consulta: data_escolhida
+        }).where('terapeuta').in(id_terapeutas).populate("terapeuta").populate("servico").then((consultas) => {
+            res.render("terapeutas/agendar-servico-buscar-data", {consultas: consultas, terapeutas: terapeutas})
+        }).catch((err) => {
+            req.flash("error_msg", "Erro ao buscar Consultas no banco de dados.")
+            res.redirect("/usuario/agendar-servico")
         })
 
     }).catch((err) => {
