@@ -3,34 +3,56 @@
 <div class="card">
     <div class="card-body">
         <h5>Buscar:</h5>
-        <form action="/usuario/busca-data" method="post">
+        <form action="/usuario/agendar-servico-ver-data" method="POST">
         <table class="table" style="text-align:center">
         <tr>
             <td>
                 <p id="alerta"></p>
-                <input type="date" id="data" onchange="verifica_data(this.value)" class="form-control mt-2">
+                <p id="alerta2"></p>
+                <input type="date" name="data" id="data" onchange="verifica_data(this.value)" class="form-control mt-2">
             </td>
             <td>
-                <input type="text" value="{{especialidade}}" hidden>
+                <input type="text" name="id_especialidade" value="{{especialidade}}" hidden>
                 <input style="margin-top: 5%;" type="image" src="/img/magnifer.png" alt="Submit Form" />
             </td>
         </tr>
         </table>
         </form>
     </div>
+    {{#if consultas}}
+    <hr>
+        <div class="container">
+          <div id='calendar'></div>
+        </div>
+    {{/if}}
 </div>
 
 <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var calendarEl = document.getElementById('calendar');
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            plugins: [ 'resourceTimeline' ],
+            defaultView: 'resourceTimelineWeek',
+            resources: [
+                // your resource list
+            ]
+        });
+
+        calendar.render();
+    });
+
     function verifica_data(data_input) {
         var data_hoje = new Date()
-        data_hoje = moment(data_hoje).format("DD-MM-YYYY")
-        data_input = moment(data_input).format("DD-MM-YYYY")
+        data_hoje = moment(data_hoje).format("YYYY-MM-DD")
+        data_input = moment(data_input).format("YYYY-MM-DD")
 
-        if(data_hoje > data_input) {
+        if(moment(data_hoje).isAfter(data_input)) {
            document.getElementById("data").valueAsDate = null;
-           document.getElementById("alerta").innerText = "Valor da data inserida é anterior a data atual!"
+           document.getElementById("alerta").innerHTML = "<strong>Valor da data inserida é anterior a data atual!</strong>"
+           document.getElementById("alerta2").innerHTML = "<strong>Por favor insira outra data.</strong>"
         } else {
             document.getElementById("alerta").innerText = ""
+            document.getElementById("alerta2").innerText = ""
         }
     }
 </script>

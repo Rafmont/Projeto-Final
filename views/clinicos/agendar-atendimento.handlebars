@@ -33,6 +33,7 @@
             <label for="buscserv">Busca de serviços:</label>
             <input type="text" id="palavra" onkeyup="buscaNome()" placeholder="Digite o nome do serviço..." class="form-control mt-2">
             <br>
+            <input type="text" id="valor_consulta" class="form-control" hidden>
             <table class="table" id="tabela" style="text-align: center">
                 <tr>
                     <th>Nome Do Serviço</th>
@@ -49,6 +50,7 @@
                 </tr>
             {{/each}}  
             <tr>
+                
                 <td><strong>Valor Total: </strong></td>
                 <td colspan="3"><strong><p id="resultado-soma">R$ 0</p></strong></td>
             </tr>
@@ -120,6 +122,7 @@
         
         console.log(resultados)
         document.getElementById("resultado-soma").innerHTML = "R$ " + passar;
+        document.getElementById("valor_consulta").value = passar;
     }
 
     function teste() {

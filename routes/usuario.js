@@ -591,14 +591,50 @@ router.get("/agendar-servico", verifica_atendente, (req, res) => {
 })
 
 /*
-    Nome da Rota: Agendar Serviço
+    Nome da Rota: Agendar Serviço - Buscar Data
     Tipo de Rota: GET
     Parâmetro: Id (Referente a especialidade escolhida).
     Função da Rota: Apresentar uma interface de busca de dia para verificar os serviços agendados.
     Autor: Rafael Monteiro
 */
 router.get("/agendar-servico-buscar-data/:id", verifica_atendente, (req, res) => {
+    //Renderiza a view passando como parâmetro o ID das especilidades para que o mesmo não seja perdido.
     res.render("terapeutas/agendar-servico-buscar-data", {especialidade: req.params.id})
+})
+
+/*
+    Nome da Rota: Agendar Serviço 
+    Tipo de Rota: POST
+    Parâmetro: Id (Referente a especialidade escolhida).
+    Função da Rota: Apresentar uma interface de busca de dia para verificar os serviços agendados.
+    Autor: Rafael Monteiro
+*/
+router.post("/agendar-servico-ver-data", verifica_atendente, (req, res) => {
+    //Recupera os dados do formulário e atribui em variáveis para uso posterior.
+    var id_especilidade = req.body.id_especialidade
+    var data_escolhida = moment(req.body.data)
+    data_escolhida.toISOString()
+    console.log(data_escolhida)
+
+    //Faz busca dos terapêutas com a determinada especilidade passada por ID.
+    Terapeuta.find({especialidade: id_especilidade}).then((terapeutas) => {
+        //Busca consultas dentre os terapêutas buscados e no dia selecionado.
+        Consulta.find({
+        terapeuta: {$in : [
+            terapeutas[0]._id,
+            terapeutas[1]._id,
+            terapeutas[2]._id
+        ]},
+        data_consulta: data_escolhida
+        }).populate("terapeuta").populate("servico").then((consultas) => {
+            res.render("terapeutas/agendar-servico-buscar-data", {consultas: consultas})
+        })
+
+    }).catch((err) => {
+        req.flash("error_msg", "Erro ao buscar terapêutas no banco de dados.")
+        res.redirect("/usuario/agendar-servico")
+    })
+
 })
 
 /*
@@ -687,7 +723,7 @@ router.post("/agendar-atendimento", verifica_atendente, (req, res) => {
                             sala: req.body.sala,
                             data_consulta: novaData,
                             horario: req.body.horario,
-                            valor_consulta: servico.valor,
+                            valor_consulta: req.body.valor_consulta,
                             fatura: fatura._id
                         })
                         novaConsulta.save().then(() => {
