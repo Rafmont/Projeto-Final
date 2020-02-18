@@ -625,7 +625,7 @@ router.post("/agendar-servico-ver-data", verifica_atendente, (req, res) => {
         //Busca consultas dentre os terapêutas buscados e no dia selecionado.
         Consulta.find({data_consulta: data_escolhida
         }).where('terapeuta').in(id_terapeutas).populate("terapeuta").populate("servico").then((consultas) => {
-            res.render("terapeutas/agendar-servico-buscar-data", {consultas: consultas, terapeutas: terapeutas})
+            res.render("terapeutas/agendar-servico-buscar-data", {consultas: consultas, terapeutas: terapeutas, data: data_escolhida})
         }).catch((err) => {
             req.flash("error_msg", "Erro ao buscar Consultas no banco de dados.")
             res.redirect("/usuario/agendar-servico")
