@@ -157,7 +157,7 @@
 
 //Mongoose
     mongoose.Promise = global.Promise;
-    mongoose.connect("mongodb://localhost/Terra-Sol", {useNewUrlParser: true }).then(() => {
+    mongoose.connect("mongodb://localhost/Terra-Sol", {useNewUrlParser: true, useUnifiedTopology: true }).then(() => {
         console.log("Conectado ao mongo")
     }).catch((err) => {
         console.log("Erro ao conectar: " + err)
