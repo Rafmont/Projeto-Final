@@ -63,7 +63,7 @@
             resourceLabelText: 'Terapêutas',
             resources: [
             {{#each terapeutas}}
-                {id: '{{_id}}', title: '{{nome}}', eventColor: 'red'},
+                {id: '{{_id}}', title: '{{nome}}', eventColor: 'red', businessHours: {startTime: '08:00', endTime: '20:00'}},
             {{/each}}
             ],
             events: [
