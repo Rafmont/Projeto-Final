@@ -1,3 +1,19 @@
+<script>
+    function verifica_data(data_input) {
+        var data_hoje = new Date()
+        data_hoje = moment(data_hoje).format("YYYY-MM-DD")
+        data_input = moment(data_input).format("YYYY-MM-DD")
+        if(moment(data_hoje).isAfter(data_input)) {
+           document.getElementById("data").valueAsDate = null;
+           document.getElementById("alerta").innerHTML = "<strong>Valor da data inserida é anterior a data atual!</strong>"
+           document.getElementById("alerta2").innerHTML = "<strong>Por favor insira outra data.</strong>"
+        } else {
+            document.getElementById("alerta").innerText = ""
+            document.getElementById("alerta2").innerText = ""
+        }
+    }
+</script>
+
 <h3>Agendamento de Serviços Especializados</h3><br>
 <h4>Escolher data desejada:</h4>
 <div class="card">
@@ -21,20 +37,22 @@
     </div>
     {{#if consultas}}
     <hr>
+        <div style="text-align: center;">
+            <form action="/usuario/agendar-servico-mostrar-form" method="POST">
+                <input type="text" name="enviar_terapeuta" hidden id="enviar_terapeuta">
+                <input type="text" name="enviar_horario"   hidden id="enviar_horario">
+                <input id="btn_prosseguir" type="image" src="/img/next.png" alt="Submit Form" hidden/>
+            </form>
+        
+        </div>
         <div class="container">
           <div id='calendar'></div>
         </div>
-        <button id="submit-btn" onclick="redirect()"></button>
+        
     {{/if}}
 </div>
 
 <script>
-    var hora_selecionada;
-
-    function redirect() {
-
-    }
-
     document.addEventListener('DOMContentLoaded', function() {
         var calendarEl = document.getElementById('calendar');
         var calendar = new FullCalendar.Calendar(calendarEl, {
@@ -68,16 +86,42 @@
             ],
             events: [
             {{#each consultas}}
-                {id: '1', resourceId: '{{terapeuta._id}}', start: '{{dateFormatiso data_consulta}}T{{horario}}:00', title: '{{servico.nome}}'},
+                {id: '{{consulta._id}}', resourceId: '{{terapeuta._id}}', start: '{{dateFormatiso data_consulta}}T{{horario}}:00', title: '{{servico.nome}}'},
             {{/each}}
             ],
-            dateClick: function(info) {
-                alert(info.startStr)
+            select: function(info) {
+                var btn_prosseguir = document.getElementById('btn_prosseguir');
+                btn_prosseguir.removeAttribute("hidden");
+
+                hora_selecionada = info.startStr;
+                var tmp = new Date(hora_selecionada);
+                var hrs = tmp.getHours();
+                if (hrs < 10) {
+                    hrs = "0" + hrs;
+                }
+                var min = tmp.getMinutes();
+                if (min == 0) {
+                    min = "0" + min;
+                }
+                var horario = hrs + ":" + min + ":00";
+
+                var terapeuta = info.resource.id
+
+                var enviar_terapeuta = document.getElementById("enviar_terapeuta")
+                enviar_terapeuta.value = terapeuta
+                var enviar_horario = document.getElementById("enviar_horario")
+                enviar_horario.value = horario
+
+                console.log("Horário: " + horario);
+                console.log("ID Terapêuta: " + terapeuta);
+                console.log("Input Terapeuta: " + enviar_terapeuta.value)
+                console.log("input Horario: " + enviar_horario.value)
             }
         });
     calendar.render();
     });
 
+    
 
 
 

@@ -603,7 +603,7 @@ router.get("/agendar-servico-buscar-data/:id", verifica_atendente, (req, res) =>
 })
 
 /*
-    Nome da Rota: Agendar Serviço 
+    Nome da Rota: Agendar Serviço - buscar data.
     Tipo de Rota: POST
     Parâmetro: Id (Referente a especialidade escolhida).
     Função da Rota: Apresentar uma interface de busca de dia para verificar os serviços agendados.
@@ -636,6 +636,35 @@ router.post("/agendar-servico-ver-data", verifica_atendente, (req, res) => {
         res.redirect("/usuario/agendar-servico")
     })
 
+})
+
+/*
+    Nome da Rota: Agendar Serviço - apresentar formulário de agendamento.
+    Tipo de Rota: POST
+    Parâmetro: Nenhum.
+    Função da Rota: Apresentar o formulário de agendamento passando as informações coerentes.
+    Autor: Rafael Monteiro
+*/
+router.post("/agendar-servico-mostrar-form", verifica_atendente, (req, res) => {
+    var id_terap = req.body.enviar_terapeuta;
+    var horar = req.body.enviar_horario;
+    console.log(id_terap + " " + horar)
+    Servico.find({ativo: true}).then((servicos) => {
+        Terapeuta.findOne({_id: req.body.enviar_terapeuta}).then((terapeuta) => {
+            Hospede.find().then((hospedes) => {
+                res.render("clinicos/agendar-atendimento", {servicos: servicos, terapeuta: terapeuta, hospedes: hospedes, horario: req.body.enviar_horario})
+            }).catch((err) => {
+                req.flash("error_msg", "Erro ao buscar hospedes")
+                res.redirect("/usuario/agendar-servico")
+            })
+        }).catch((err) => {
+            req.flash("error_msg", "Erro ao buscar terapeuta!")
+            res.redirect("/usuario/agendar-servico")
+        })
+    }).catch((err) => {
+        req.flash("error_msg", "Erro ao buscar serviços.")
+        res.redirect("/usuario/agendar-servico")
+    })
 })
 
 /*
@@ -689,7 +718,7 @@ router.get("/marcar-atendimento-escolher-data/:id", verifica_atendente, (req, re
 */
 router.get("/agendar-atendimento", verifica_atendente, (req, res) => {
     Servico.find({ativo: true}).then((servicos) => { 
-        Terapeuta.find({ativo: true}).then((terapeutas) => {
+        Terapeuta.find({ativo: true}).then((terapeutas) => { 
              Hospede.find().then((hospedes) => {
                 res.render("clinicos/agendar-atendimento", {servicos: servicos, terapeutas: terapeutas, hospedes: hospedes})
              }).catch((err) => {

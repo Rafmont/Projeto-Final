@@ -219,7 +219,7 @@
 
     //Rota para renderizar o dashboar após o login.
     app.get('/dashboard', verifica_login, (req, res) => {
-        Evento.find().sort({data: "desc"}).then((eventos) => {
+        Evento.find().sort({data: "desc"}).lean().then((eventos) => {
             var data_agora = Date(Date.now());
             res.render("dashboard", {eventos: eventos, data_agora: data_agora})
         })

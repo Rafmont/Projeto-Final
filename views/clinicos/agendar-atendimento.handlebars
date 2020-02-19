@@ -3,12 +3,7 @@
     <div class="card-body">
         <form action="/usuario/agendar-atendimento" id="formulario" method="POST">
             <label for="cpf_clinico">Terapêuta:</label>
-                <input type="text" name="cpf_terapeuta" class="form-control" list="terapeutas">
-                <datalist id="terapeutas">
-                    {{#each terapeutas}}
-                        <option value="{{ cpf }}">{{nome}}</option>
-                    {{/each}}
-                </datalist>
+                <input type="text" name="cpf_terapeuta" class="form-control" value="{{terapeuta.nome}}">
 
 
             <label for="cpf_hospede">Hóspede: </label>
@@ -28,7 +23,7 @@
                 <input type="date" name="data_consulta" class="form-control">
 
             <label for="horario">Horário</label>
-                <input type="time" name="horario" class="form-control">
+                <input type="time" name="horario" value="{{horario}}" class="form-control">
             <br>
             <label for="buscserv">Busca de serviços:</label>
             <input type="text" id="palavra" onkeyup="buscaNome()" placeholder="Digite o nome do serviço..." class="form-control mt-2">
@@ -60,6 +55,10 @@
     </div>
 </div>
 
+serviços = {{servicos}} <br><br>
+terapeuta = {{terapeuta}} <br><br>
+horario = {{horario}} <br><br>
+hospedes = {{hospedes}}
 
 <script>
     function buscaNome() {
