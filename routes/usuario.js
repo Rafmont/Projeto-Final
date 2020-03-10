@@ -652,7 +652,7 @@ router.post("/agendar-servico-mostrar-form", verifica_atendente, (req, res) => {
     Servico.find({ativo: true}).then((servicos) => {
         Terapeuta.findOne({_id: req.body.enviar_terapeuta}).then((terapeuta) => {
             Hospede.find().then((hospedes) => {
-                res.render("clinicos/agendar-atendimento", {servicos: servicos, terapeuta: terapeuta, hospedes: hospedes, horario: req.body.enviar_horario})
+                res.render("clinicos/agendar-atendimento", {servicos: servicos, terapeuta: terapeuta, hospedes: hospedes, horario: req.body.enviar_horario, data: req.body.enviar_data})
             }).catch((err) => {
                 req.flash("error_msg", "Erro ao buscar hospedes")
                 res.redirect("/usuario/agendar-servico")

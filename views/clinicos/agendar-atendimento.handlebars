@@ -1,35 +1,49 @@
-<h4>Agendar consulta:</h4>
+<h4>Agendar consulta com {{terapeuta.nome}} :</h4>
 <div class="card">
     <div class="card-body">
         <form action="/usuario/agendar-atendimento" id="formulario" method="POST">
-            <label for="cpf_clinico">Terapêuta:</label>
-                <input type="text" name="cpf_terapeuta" class="form-control" value="{{terapeuta.nome}}">
+            <input type="text" name="cpf_terapeuta" class="form-control" value="{{terapeuta._id}}"hidden>
 
-
-            <label for="cpf_hospede">Hóspede: </label>
-                <input type="text" name="cpf_hospede" class="form-control" list="hospedes">
-                <datalist id="hospedes">
-                    {{#each hospedes}}
-                        <option value="{{ cpf }}">{{nome}}</option>
-                    {{/each}}
-                </datalist>
-                
+            <label for="bescahosp">Hóspede:</label>
+            <input type="text" id="palavra-hosp" onkeyup="buscaNomeHosp()" placeholder="Digite o nome do hóspede..." class="form-control mt-2">
+            <br>
+            <table class="table table-striped" id="tabela-hosp" style="text-align: center;">
+                <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>CPF</th>
+                    <th>Selecionar</th>
+                </tr>
+                </thead>
+                <tbody>
+            {{#each hospedes}}
+                <tr>
+                    <td>{{nome}}</td>
+                    <td>{{cpf}}</td>
+                    <td><input type="radio" name="hospede" value="{{_id}}"></td>
+                </tr>
+            {{/each}}
+            </tbody>
+            </table>
+            <hr>
 
 
             <label for="sala">Sala da consulta:</label>
                 <input type="text" name="sala" class="form-control">
 
             <label for="data_consulta">Data da consulta</label>
-                <input type="date" name="data_consulta" class="form-control">
+                <input type="date" value="{{data}}" disabled class="form-control">
+                <input type="date" name="data_consulta" value="{{data}}" hidden class="form-control">
 
             <label for="horario">Horário</label>
-                <input type="time" name="horario" value="{{horario}}" class="form-control">
+                <input type="time" disabled value="{{horario}}" class="form-control">
+                <input type="time" name="horario" hidden value="{{horario}}" class="form-control">
             <br>
             <label for="buscserv">Busca de serviços:</label>
             <input type="text" id="palavra" onkeyup="buscaNome()" placeholder="Digite o nome do serviço..." class="form-control mt-2">
             <br>
             <input type="text" id="valor_consulta" class="form-control" hidden>
-            <table class="table" id="tabela" style="text-align: center">
+            <table class="table table-striped" id="tabela" style="text-align: center">
                 <tr>
                     <th>Nome Do Serviço</th>
                     <th>Duração (Minutos)</th>
@@ -50,17 +64,59 @@
                 <td colspan="3"><strong><p id="resultado-soma">R$ 0</p></strong></td>
             </tr>
             </table>
-            <button type="submit" class="btn btn-success mt-2">Agendar</button>
+            <hr>
+            <div style="text-align: center;">
+                <button type="submit" class="btn btn-success mt-2">Agendar</button>
+            </div>
+            
         </form>
     </div>
 </div>
 
-serviços = {{servicos}} <br><br>
-terapeuta = {{terapeuta}} <br><br>
-horario = {{horario}} <br><br>
-hospedes = {{hospedes}}
+
 
 <script>
+/*
+    $(document).ready(function () {
+        $('#tabela-hosp').DataTable({
+            "pagingType": "simple",
+            "info": false,
+            "ordering": false,
+            "searching": false,
+            "language" : {
+            "sEmptyTable": "Nenhum registro encontrado",
+            "sInfo": "Mostrando de _START_ até _END_ de _TOTAL_ registros",
+            "sInfoEmpty": "Mostrando 0 até 0 de 0 registros",
+            "sInfoFiltered": "(Filtrados de _MAX_ registros)",
+            "sInfoPostFix": "",
+            "sInfoThousands": ".",
+            "sLengthMenu": "_MENU_ resultados por página",
+            "sLoadingRecords": "Carregando...",
+            "sProcessing": "Processando...",
+            "sZeroRecords": "Nenhum registro encontrado",
+            "sSearch": "Pesquisar",
+            "oPaginate": {
+                "sNext": "Próximo",
+                "sPrevious": "Anterior",
+                "sFirst": "Primeiro",
+                "sLast": "Último"
+            },
+            "oAria": {
+                "sSortAscending": ": Ordenar colunas de forma ascendente",
+                "sSortDescending": ": Ordenar colunas de forma descendente"
+            },
+            "select": {
+                "rows": {
+                    "_": "Selecionado %d linhas",
+                    "0": "Nenhuma linha selecionada",
+                    "1": "Selecionado 1 linha"
+                }
+            }
+        }
+        });
+        $('.dataTables_length').addClass('bs-select');
+    });
+*/
     function buscaNome() {
         var entrada, filtro, tabela, tr, td, i, txtValue;
 
@@ -84,6 +140,31 @@ hospedes = {{hospedes}}
             }
         }
     }
+
+    function buscaNomeHosp() {
+        var entrada, filtro, tabela, tr, td, i, txtValue;
+
+        
+        entrada = document.getElementById("palavra-hosp");
+        filtro = entrada.value.toUpperCase();
+        tabela = document.getElementById("tabela-hosp");
+        tr = tabela.getElementsByTagName("tr");
+
+
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[0];
+            console.log(td)
+            if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filtro) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
+
 
     function verificaValor() {
         var tabela, tr, td, i, input, valor, resultado_total, passar;

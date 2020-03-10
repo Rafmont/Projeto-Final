@@ -12,6 +12,44 @@
             document.getElementById("alerta2").innerText = ""
         }
     }
+
+    function trocateste() {
+        var basic =  "ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789";
+
+         var retorno = "";
+
+        var size = [32, 4, 5, 6]
+
+        for (var i = 0 ; i <= size[0]; i++) {
+            var pos =  Math.floor(Math.random() * basic.length);
+            retorno = retorno + basic[pos];
+        }
+
+        retorno = retorno + "-";
+
+        for (var i = 0 ; i <= size[1]; i++) {
+            var pos =  Math.floor(Math.random() * basic.length);
+            retorno = retorno + basic[pos];
+        }
+
+        retorno = retorno + "-";
+        
+        for (var i = 0 ; i <= size[2]; i++) {
+            var pos =  Math.floor(Math.random() * basic.length);
+            retorno = retorno + basic[pos];
+        }
+
+        retorno = retorno + "-";
+
+        for (var i = 0 ; i <= size[3]; i++) {
+            var pos =  Math.floor(Math.random() * basic.length);
+            retorno = retorno + basic[pos];
+        }
+        
+
+        document.getElementById("teste").value = retorno
+
+    }
 </script>
 
 <h3>Agendamento de Serviços Especializados</h3><br>
@@ -35,12 +73,12 @@
         </table>
         </form>
     </div>
-    {{#if consultas}}
     <hr>
         <div style="text-align: center;">
             <form action="/usuario/agendar-servico-mostrar-form" method="POST">
                 <input type="text" name="enviar_terapeuta" hidden id="enviar_terapeuta">
-                <input type="text" name="enviar_horario"   hidden id="enviar_horario">
+                <input type="text" name="enviar_horario" hidden id="enviar_horario">
+                <input type="text" name="enviar_data" hidden id="enviar_data">
                 <input id="btn_prosseguir" type="image" src="/img/next.png" alt="Submit Form" hidden/>
             </form>
         
@@ -48,8 +86,10 @@
         <div class="container">
           <div id='calendar'></div>
         </div>
-        
-    {{/if}}
+        <br>
+        <input type="text" class="form-control" id="teste">
+        <br>
+        <button class="btn btn-success" onclick="trocateste()">Trocar Número!</button>
 </div>
 
 <script>
@@ -81,20 +121,23 @@
             resourceLabelText: 'Terapêutas',
             resources: [
             {{#each terapeutas}}
-                {id: '{{_id}}', title: '{{nome}}', eventColor: 'red', businessHours: {startTime: '08:00', endTime: '20:00'}},
+                {id: '{{_id}}', title: '{{nome}}', eventColor: '#cc0000', businessHours: {startTime: '08:00', endTime: '20:00'}},
             {{/each}}
             ],
             events: [
+            {{#if consultas}}
             {{#each consultas}}
                 {id: '{{consulta._id}}', resourceId: '{{terapeuta._id}}', start: '{{dateFormatiso data_consulta}}T{{horario}}:00', title: '{{servico.nome}}'},
             {{/each}}
+            {{/if}}
             ],
             select: function(info) {
                 var btn_prosseguir = document.getElementById('btn_prosseguir');
                 btn_prosseguir.removeAttribute("hidden");
-
+                
                 hora_selecionada = info.startStr;
                 var tmp = new Date(hora_selecionada);
+                var data = tmp.toISOString().split('T')[0]
                 var hrs = tmp.getHours();
                 if (hrs < 10) {
                     hrs = "0" + hrs;
@@ -111,6 +154,7 @@
                 enviar_terapeuta.value = terapeuta
                 var enviar_horario = document.getElementById("enviar_horario")
                 enviar_horario.value = horario
+                document.getElementById("enviar_data").value = data;
 
                 console.log("Horário: " + horario);
                 console.log("ID Terapêuta: " + terapeuta);
@@ -121,7 +165,6 @@
     calendar.render();
     });
 
-    
 
 
 
