@@ -20,6 +20,7 @@
                 <tr>
                     <td>{{nome}}</td>
                     <td>{{cpf}}</td>
+                    <!-- Envia o hóspede escolhido -->
                     <td><input type="radio" name="hospede" value="{{_id}}"></td>
                 </tr>
             {{/each}}
@@ -29,20 +30,24 @@
 
 
             <label for="sala">Sala da consulta:</label>
+                <!-- Envia a sala -->
                 <input type="text" name="sala" class="form-control">
 
             <label for="data_consulta">Data da consulta</label>
                 <input type="date" value="{{data}}" disabled class="form-control">
+                <!-- Envia a data -->
                 <input type="date" name="data_consulta" value="{{data}}" hidden class="form-control">
 
             <label for="horario">Horário</label>
                 <input type="time" disabled value="{{horario}}" class="form-control">
+                <!-- Envia o horário -->
                 <input type="time" name="horario" hidden value="{{horario}}" class="form-control">
+
             <br>
             <label for="buscserv">Busca de serviços:</label>
             <input type="text" id="palavra" onkeyup="buscaNome()" placeholder="Digite o nome do serviço..." class="form-control mt-2">
             <br>
-            <input type="text" id="valor_consulta" class="form-control" hidden>
+
             <table class="table table-striped" id="tabela" style="text-align: center">
                 <tr>
                     <th>Nome Do Serviço</th>
@@ -53,11 +58,16 @@
             {{#each servicos}}
                 <tr>
                     <td>{{nome}}</td>
-                    <td>{{duracao}}</td>
+                    <td><p>{{duracao}}</p></td>
                     <td><p>{{valor}}</p></td>
+                    <!-- envia os serviços -->
                     <td><input onchange="verificaValor()" name="check" type="checkbox" class="form-check-input" value="{{_id}}"></td>
                 </tr>
-            {{/each}}  
+            {{/each}}
+            
+            <!-- Envio da duração de todos os serviços e do valor respectivamente! -->
+            <input type="text" name="duracao" hidden id="duracao">
+            <input type="text" name="valor_t" hidden id="valor_t">
             <tr>
                 
                 <td><strong>Valor Total: </strong></td>
@@ -153,7 +163,7 @@
 
         for (i = 0; i < tr.length; i++) {
             td = tr[i].getElementsByTagName("td")[0];
-            console.log(td)
+
             if (td) {
                 txtValue = td.textContent || td.innerText;
                 if (txtValue.toUpperCase().indexOf(filtro) > -1) {
@@ -180,29 +190,37 @@
         tr = tabela.getElementsByTagName("tr");
 
         var resultados = [];
+        var resultado2 = [];
         for (i = 0; i < tr.length; i++) {
             td = tr[i].getElementsByTagName("td")[3];
             input = tr[i].getElementsByTagName("input")[0];
             if (input) {
                 if (input.checked) {
-                    conteudo = tr[i].getElementsByTagName("p")[0];
+                    conteudo = tr[i].getElementsByTagName("p")[1];
+                    conteud2 = tr[i].getElementsByTagName("p")[0];
                     valor = parseInt(conteudo.innerText, 10);
+                    valo2 = parseInt(conteud2.innerText, 10);
+
+                    resultado2[i] = valo2
                     resultados[i] = valor
-                    
                 } else {
                     resultados[i] = 0
+                    resultado2[i] = 0
                 }
             }
         }
 
+        passa2 = 0
     	passar = 0
         for (i = 1; i < resultados.length; i++) {
             passar = passar + resultados[i];
+            passa2 = passa2 + resultado2[i];
         }
-        
-        console.log(resultados)
+
         document.getElementById("resultado-soma").innerHTML = "R$ " + passar;
-        document.getElementById("valor_consulta").value = passar;
+
+        document.getElementById("valor_t").value = passar;
+        document.getElementById("duracao").value = passa2;
     }
 
     function teste() {

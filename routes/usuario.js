@@ -668,6 +668,17 @@ router.post("/agendar-servico-mostrar-form", verifica_atendente, (req, res) => {
 })
 
 /*
+    Nome da Rota: Agendar Serviço
+    Tipo de Rota: POST
+    Parâmetro: Nenhum.
+    Função da Rota: Salvar no banco de dados um novo serviço especializado, tratando os erros.
+    Autor: Rafael Monteiro
+*/
+router.post("/agendar-servico-esp", verifica_atendente, (req, res) => {
+    
+})
+
+/*
     Nome da Rota: Marcar atendimento - Escolher o terapêuta
     Tipo de Rota: GET
     Parâmetro: id (referente a especialidade definida anteriormente).
